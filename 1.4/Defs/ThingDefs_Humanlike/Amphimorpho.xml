@@ -20,15 +20,16 @@
 				<bodyTex>RVC/Empty</bodyTex>
 				<headTex>RVC/Empty</headTex>
 				<renderableDefs>
-					<li>RimMorpho_EarLeft</li>
-					<li>RimMorpho_EarRight</li>
-
-					<li>RimMorpho_Head</li>
-
 					<li>RimMorpho_Body</li>
+					<li>RimMorpho_Head</li>
 					<li>RimMorpho_Mouth</li>
 					<li>RimMorpho_Eyes</li>
 					<li>RimMorpho_Tail</li>
+
+					<li>RimMorpho_EarLeft</li>
+					<li>RimMorpho_EarRight</li>
+
+
 				</renderableDefs>
 
 				<!-- PLACEHOLDER-->
@@ -55,8 +56,8 @@
 									</li>
 									<li>
 										<weight>2</weight>
-										<min>RGBA(40, 40, 40, 255)</min>
-										<max>RGBA(60, 60, 60, 255)</max>
+										<min>(40, 40, 40)</min>
+										<max>(60, 60, 60)</max>
 									</li>
 								</options>
 							</colorTwo>
@@ -82,47 +83,62 @@
 							<colorOne Class="ColorGenerator_Options">
 								<options>
 									<li>
-										<weight>10</weight>
-										<min>(0, 0, 0)</min>
-										<max>(50, 50, 50)</max>
-									</li>
-									<li>
 										<weight>2</weight>
-										<min>(100, 100, 100)</min>
+										<min>(184, 178, 168)</min>
 										<max>(255, 255, 255)</max>
 									</li>
 									<li>
+										<weight>3</weight>
+										<min>(74, 97, 94)</min>
+										<max>(210, 188, 164)</max>
+									</li>
+									<li>
 										<weight>5</weight>
-										<min>(0, 0, 0)</min>
-										<max>(50, 100, 50)</max>
+										<min>(41, 41, 53)</min>
+										<max>(112, 89, 80)</max>
 									</li>
 								</options>
 							</colorOne>
 							<colorTwo Class="ColorGenerator_Options">
 								<options>
 									<li>
-										<weight>10</weight>
-										<min>(50, 50, 50)</min>
-										<max>(200, 200, 200)</max>
+										<weight>2</weight>
+										<min>(184, 178, 168)</min>
+										<max>(255, 255, 255)</max>
 									</li>
 									<li>
-										<weight>2</weight>
-										<min>RGBA(40, 40, 40, 255)</min>
-										<max>RGBA(60, 60, 60, 255)</max>
+										<weight>3</weight>
+										<min>(74, 97, 94)</min>
+										<max>(210, 188, 164)</max>
+									</li>
+									<li>
+										<weight>5</weight>
+										<min>(41, 41, 53)</min>
+										<max>(112, 89, 80)</max>
 									</li>
 								</options>
 							</colorTwo>
 							<colorThree Class="ColorGenerator_Options">
 								<options>
 									<li>
-										<weight>10</weight>
-										<min>(50, 50, 50)</min>
-										<max>(200, 200, 200)</max>
+										<weight>3</weight>
+										<min>(76, 76, 85)</min>
+										<max>(95, 171, 105)</max>
 									</li>
 									<li>
-										<weight>2</weight>
-										<min>(40, 40, 40)</min>
-										<max>(60, 60, 60)</max>
+										<weight>50</weight>
+										<min>(95, 171, 79)</min>
+										<max>(167, 205, 85)</max>
+									</li>
+									<li>
+										<weight>5</weight>
+										<min>(73, 67, 28)</min>
+										<max>(202, 81, 73)</max>
+									</li>
+									<li>
+										<weight>4</weight>
+										<min>(142, 38, 54)</min>
+										<max>(199, 41, 103)</max>
 									</li>
 								</options>
 							</colorThree>

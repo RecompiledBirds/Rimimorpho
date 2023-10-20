@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<RVCRestructured.Defs.RenderableDef ParentName="RimMorpho_BaseAmphiBodyPart">
+		<defName>RimMorpho_EarLeft</defName>
+		<north>
+			<position>(0,0.01,0)</position>
+			<size>1.5</size>
+		</north>
+		<south>
+			<position>(0,0.01,0)</position>
+			<size>1.5</size>
+		</south>
+		<east>
+			<position>(0,-0.05,0)</position>
+			<size>1.5</size>
+		</east>
+		<textures>
+			<li>
+				<texPath>Amphimorpho/BaseTexture/EarLeft/EarLeft</texPath>
+				<alternateMaskPaths>
+					<li>Amphimorpho/Variant_1/EarLeft/EarLeft</li>
+				</alternateMaskPaths>
+			</li>
+		</textures>
+	</RVCRestructured.Defs.RenderableDef>
+
+	<RVCRestructured.Defs.RenderableDef ParentName="RimMorpho_BaseAmphiBodyPart">
+		<defName>RimMorpho_EarRight</defName>
+		<north>
+			<position>(0,0.01,0)</position>
+			<size>1.5</size>
+		</north>
+		<south>
+			<position>(0,0.01,0)</position>
+			<size>1.5</size>
+		</south>
+		<east>
+			<position>(0,0.05,0)</position>
+			<size>1.5</size>
+		</east>
+		<west>
+			<position>(0,-0.05,0)</position>
+			<size>1.5</size>
+		</west>
+		<textures>
+			<li>
+				<texPath>Amphimorpho/BaseTexture/EarRight/EarRight</texPath>
+				<alternateMaskPaths>
+					<li>Amphimorpho/Variant_1/EarRight/EarRight</li>
+				</alternateMaskPaths>
+			</li>
+		</textures>
+	</RVCRestructured.Defs.RenderableDef>
+</Defs>

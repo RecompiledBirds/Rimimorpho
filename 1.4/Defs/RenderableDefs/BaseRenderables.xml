@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<RVCRestructured.Defs.RenderableDef Name="RimMorpho_BaseAmphiFleshPart" Abstract="True">
+		<colorSet>Skin</colorSet>
+	</RVCRestructured.Defs.RenderableDef>
+
+	<RVCRestructured.Defs.RenderableDef ParentName="RimMorpho_BaseAmphiFleshPart" Name="RimMorpho_BaseAmphiBodyPart" Abstract="True">
+		<linkPosWith>RimMorpho_Body</linkPosWith>
+		<linkTexWith>RimMorpho_Body</linkTexWith>
+	</RVCRestructured.Defs.RenderableDef>
+
+	<RVCRestructured.Defs.RenderableDef ParentName="RimMorpho_BaseAmphiBodyPart" Name="RimMorpho_BaseAmphiFacialFeature" Abstract="True">
+		<linkPosWith>RimMorpho_Head</linkPosWith>
+		<north>
+			<position>(0,-0.5,0)</position>
+			<size>1.5</size>
+		</north>
+		<south>
+			<position>(0,0.005,0)</position>
+			<size>1.5</size>
+		</south>
+		<east>
+			<position>(0,0.005,0)</position>
+			<size>1.5</size>
+		</east>
+		<flipLayerEastWest>false</flipLayerEastWest>
+		<flipYPos>false</flipYPos>
+
+	</RVCRestructured.Defs.RenderableDef>
+</Defs>

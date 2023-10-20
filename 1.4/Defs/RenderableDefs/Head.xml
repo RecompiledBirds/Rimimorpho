@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<RVCRestructured.Defs.RenderableDef ParentName="RimMorpho_BaseAmphiBodyPart">
+		<defName>RimMorpho_Head</defName>
+		<bodyPart>Head</bodyPart>
+		<flipLayerEastWest>false</flipLayerEastWest>
+		<north>
+			<position>(0,0.01,0)</position>
+			<size>1.5</size>
+		</north>
+		<south>
+			<position>(0,0.01,0)</position>
+			<size>1.5</size>
+		</south>
+		<east>
+			<position>(0,0.01,0)</position>
+			<size>1.5</size>
+		</east>
+		<textures>
+			<li>
+				<texPath>Amphimorpho/BaseTexture/Head/Head</texPath>
+				<alternateMaskPaths>
+					<li>Amphimorpho/Variant_1/Head/Head</li>
+				</alternateMaskPaths>
+			</li>
+		</textures>
+	</RVCRestructured.Defs.RenderableDef>
+</Defs>

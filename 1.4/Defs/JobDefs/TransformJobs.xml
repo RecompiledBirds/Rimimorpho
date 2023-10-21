@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<JobDef>
+		<defName>RimMorpho_TouchPawn</defName>
+		<driverClass>Rimimorpho.TouchPawn</driverClass>
+		<reportString>Touching pawn.</reportString>
+		<casualInterruptible>false</casualInterruptible>
+		<allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+	</JobDef>
+
+	<JobDef>
+		<defName>RimMorpho_RevertForm</defName>
+		<driverClass>Rimimorpho.RevertForm</driverClass>
+		<reportString>Reverting form.</reportString>
+		<casualInterruptible>false</casualInterruptible>
+		<allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+	</JobDef>
+</Defs>

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>net48</TargetFramework>
@@ -18,6 +18,12 @@
 	<ItemGroup>
 		<Folder Include="1.4\Assemblies\" />
 		<Folder Include="Textures\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Reference Include="RimValiCore RW">
+	    <HintPath>..\RimValiCore-RW\1.4\Assemblies\RimValiCore RW.dll</HintPath>
+	  </Reference>
 	</ItemGroup>
 
 </Project>

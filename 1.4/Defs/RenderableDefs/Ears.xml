@@ -3,7 +3,7 @@
 	<RVCRestructured.Defs.RenderableDef ParentName="RimMorpho_BaseAmphiBodyPart">
 		<defName>RimMorpho_EarLeft</defName>
 		<north>
-			<position>(0,0.01,0)</position>
+			<position>(0,0.05,0)</position>
 			<size>1.5</size>
 		</north>
 		<south>
@@ -27,7 +27,7 @@
 	<RVCRestructured.Defs.RenderableDef ParentName="RimMorpho_BaseAmphiBodyPart">
 		<defName>RimMorpho_EarRight</defName>
 		<north>
-			<position>(0,0.01,0)</position>
+			<position>(0,0.05,0)</position>
 			<size>1.5</size>
 		</north>
 		<south>

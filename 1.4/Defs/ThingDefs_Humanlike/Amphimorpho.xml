@@ -13,6 +13,9 @@
 			<RoyalFavorValue>3</RoyalFavorValue>
 		</statBases>
 		<comps>
+			<li Class="Rimimorpho.AmphiShifterProps">
+				
+			</li>
 			<li Class="RVCRestructured.RVRCannibalismComp">
 				<caresAboutUndefinedRaces>true</caresAboutUndefinedRaces>
 			</li>
@@ -120,21 +123,25 @@
 							</colorTwo>
 							<colorThree Class="ColorGenerator_Options">
 								<options>
+									<!--blues-->
 									<li>
-										<weight>3</weight>
+										<weight>10</weight>
 										<min>(76, 76, 85)</min>
 										<max>(95, 171, 105)</max>
 									</li>
+									<!--Green-->
 									<li>
 										<weight>50</weight>
 										<min>(95, 171, 79)</min>
 										<max>(167, 205, 85)</max>
 									</li>
+									<!--yellows-->
 									<li>
 										<weight>5</weight>
 										<min>(73, 67, 28)</min>
 										<max>(202, 81, 73)</max>
 									</li>
+									<!--Reds-->
 									<li>
 										<weight>4</weight>
 										<min>(142, 38, 54)</min>

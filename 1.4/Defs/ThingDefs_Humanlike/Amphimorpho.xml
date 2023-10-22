@@ -314,7 +314,9 @@
 			<leatherDef>Leather_Human</leatherDef>
 			<nameGenerator>RVFFA_AvaliNamer</nameGenerator>
 			<body>RVFFA_AvaliBody</body>
+			<bloodDef>RimMorpho_AmphimorphoGoo</bloodDef>
 			<baseBodySize>1</baseBodySize>
+			<fleshType>RimMorpho_AmphiFlesh</fleshType>
 			<baseHealthScale>1</baseHealthScale>
 			<foodType>OmnivoreHuman</foodType>
 			<gestationPeriodDays>18</gestationPeriodDays>

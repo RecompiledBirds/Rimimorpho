@@ -56,10 +56,28 @@ namespace Rimimorpho
         }
 
 
+        private int ticksDownedFor = 0;
+        public override void CompTick()
+        {
+            if (CurrentForm == parent.def) return;
+            Pawn pawn = parent as Pawn;
+            if (!pawn.Downed)
+            {
+                ticksDownedFor = 0;
+                return;
+            }
+            ticksDownedFor++;
+
+            if (ticksDownedFor >= 3600)
+            {
+                RevertForm();
+            }
+            base.CompTick();
+        }
 
         public override void PostExposeData()
         {
-
+            Scribe_Values.Look(ref ticksDownedFor, nameof(ticksDownedFor));
             Scribe_Values.Look(ref shifted, nameof(shifted));
             base.PostExposeData();
         }

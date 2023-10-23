@@ -21,6 +21,9 @@
 			<li Class="HediffCompProperties_Discoverable">
 				<sendLetterWhenDiscovered>true</sendLetterWhenDiscovered>
 			</li>
+			<li Class="Rimimorpho.GooHediffCompProps">
+				
+			</li>
 		</comps>
 		<stages>
 			<li>

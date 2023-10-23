@@ -223,15 +223,6 @@
 					<li>ludeon.rimworld</li>
 					<li>ludeon.rimworld.royalty</li>
 				</modAllowedApparel>
-				<disabledThoughts>
-					<li>Naked</li>
-					<li>SleepDisturbed</li>
-					<li>SharedBed</li>
-				</disabledThoughts>
-				<disabledTraits>
-					<li>BodyPurist</li>
-					<li>Transhumanist</li>
-				</disabledTraits>
 				<canUseAnyApparel>true</canUseAnyApparel>
 			</li>
 			<li Class="RVCRestructured.RVRCP">
@@ -246,6 +237,7 @@
 				</allowedBodyTypes>
 			</li>
 		</comps>
+		<!-- vanilla -->
 		<tools>
 			<li>
 				<label>left fist</label>

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -55,6 +56,26 @@ namespace Rimimorpho
             yield return revert;
         }
 
+        private RaceProperties raceProperties = null;
+        public override RaceProperties RaceProperties
+        {
+            get
+            {
+                if (raceProperties == null)
+                {
+                    raceProperties = CurrentForm.race;
+                    FieldInfo field = typeof(RaceProperties).GetField("bloodDef", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                    field.SetValue(raceProperties, field.GetValue(parent.def.race));
+                }
+                return raceProperties;
+            }
+        }
+
+        public override void SetForm(ThingDef def)
+        {
+            base.SetForm(def);
+            raceProperties = null;
+        }
 
         private int ticksDownedFor = 0;
         public override void CompTick()

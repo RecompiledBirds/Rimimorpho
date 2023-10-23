@@ -19,7 +19,7 @@ namespace Rimimorpho
 
         public override string GetReport()
         {
-            return $"Touching {TargetA.Pawn.Name.ToStringShort}.";
+            return $"Touching {(TargetA.Pawn.Name!=null?TargetA.Pawn.Name.ToStringShort:TargetA.Pawn.Label)}.";
         }
 
         public void ConsumeEnergy()

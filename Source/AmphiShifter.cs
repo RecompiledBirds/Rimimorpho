@@ -63,7 +63,7 @@ namespace Rimimorpho
             {
                 if (raceProperties == null)
                 {
-                    raceProperties = CurrentForm.race;
+                    raceProperties =base.RaceProperties;
                     FieldInfo field = typeof(RaceProperties).GetField("bloodDef", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
                     field.SetValue(raceProperties, field.GetValue(parent.def.race));
                 }

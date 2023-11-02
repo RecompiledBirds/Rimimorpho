@@ -62,7 +62,6 @@ namespace Rimimorpho
             //TODO: signal to player that pawn cant transform
             if (energy > (pawn.needs.food.CurLevel + pawn.needs.rest.CurLevel) / 2) yield break;
             yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.OnCell);
-            RVCLog.Log(ticks);
             Toil waitToil =  Toils_General.Wait(ticks).WithProgressBarToilDelay(TargetIndex.B);
             waitToil.AddPreTickAction(ShapeShift);
             yield return waitToil;

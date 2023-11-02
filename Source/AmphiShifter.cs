@@ -33,13 +33,12 @@ namespace Rimimorpho
                     canTargetAnimals = true,
                     canTargetPawns = true,
                     canTargetHumans = true
+                },
+                action = delegate (LocalTargetInfo target)
+                {
+                    Job job = JobMaker.MakeJob(AmphiDefs.RimMorpho_TouchPawn, target.Pawn);
+                    pawn.jobs.TryTakeOrderedJob(job);
                 }
-
-            };
-            command.action = delegate (LocalTargetInfo target)
-            {
-                Job job = JobMaker.MakeJob(AmphiDefs.RimMorpho_TouchPawn, target.Pawn);
-                pawn.jobs.TryTakeOrderedJob(job);
             };
             Command_Action revert = new Command_Action
             {

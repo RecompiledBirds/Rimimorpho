@@ -1,5 +1,6 @@
 ﻿using Rimimorpho;
 using RVCRestructured;
+using RVCRestructured.Shifter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,18 +27,8 @@ namespace Rimimorpho
             {
                 return;
             }
-            Pawn.Strip();
-            Pawn.def = AmphiDefs.RimMorpho_Amphimorpho;
-            Pawn.AllComps.Clear();
-            Pawn.InitializeComps();
-            RVRComp comp = Pawn.TryGetComp<RVRComp>();
-            if (comp != null)
-            {
-                comp.GenGraphics();
-                comp.InformGraphicsDirty();
-
-                Pawn.Drawer.renderer.graphics.ResolveAllGraphics();
-            }
+            if (Pawn.def != AmphiDefs.RimMorpho_Amphimorpho)
+                PawnChanger.ChangePawnRace(Pawn, AmphiDefs.RimMorpho_Amphimorpho);
             Pawn.health.RemoveHediff(parent);
 
         }

@@ -18,8 +18,8 @@ namespace Rimimorpho
         protected override IEnumerable<Toil> MakeNewToils()
         {
             AmphiShifter amphiShifter = pawn.TryGetComp<AmphiShifter>();
-            int morphTicks = ShiftUtils.ShiftDifficulty(pawn, amphiShifter, TargetA.Pawn.def);
-            yield return Toils_General.Wait(morphTicks).WithProgressBarToilDelay(TargetIndex.A);
+            ShiftUtils.GetTransformData(pawn, amphiShifter, TargetA.Pawn, out int ticks, out double energy);
+            yield return Toils_General.Wait(ticks).WithProgressBarToilDelay(TargetIndex.A);
             yield return new Toil
             {
                 initAction = delegate

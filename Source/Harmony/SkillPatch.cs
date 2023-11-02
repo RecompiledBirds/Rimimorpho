@@ -15,6 +15,11 @@ namespace Rimimorpho
     {
         public static bool Prefix(Pawn p, Vector2 offset, SkillUI.SkillDrawMode mode, Rect container)
         {
+            if (p.def == AmphiDefs.RimMorpho_Amphimorpho)
+            {
+                container.height += 30f;
+                container.y -= 30f;
+            }
             float levelLabelWidth = (float)typeof(SkillUI).GetField("levelLabelWidth", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null);
             List<SkillDef> skillDefsInOrder= (List<SkillDef>)typeof(SkillUI).GetField("skillDefsInListOrderCached", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null);
             Text.Font = GameFont.Small;
@@ -39,7 +44,7 @@ namespace Rimimorpho
                 SkillDef skillDef = skillDefsInOrder[j];
                 if (skillDef == AmphiDefs.RimMorpho_Shifting && p.def != AmphiDefs.RimMorpho_Amphimorpho)
                 {
-                    subOffsetBy = 1;
+                    subOffsetBy +=1;
                     continue;
                 }
                 float y = (j-subOffsetBy) * 27f + offset.y;

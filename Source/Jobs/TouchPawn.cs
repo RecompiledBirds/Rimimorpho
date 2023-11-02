@@ -1,4 +1,5 @@
-﻿using RVCRestructured;
+﻿using RimWorld;
+using RVCRestructured;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,9 +22,18 @@ namespace Rimimorpho
         {
             return $"Touching {(TargetA.Pawn.Name!=null?TargetA.Pawn.Name.ToStringShort:TargetA.Pawn.Label)}.";
         }
-
+        Random random = new Random();
         public void ShapeShift()
         {
+
+            if (random.Next(1, 100) >= 95)
+            {
+                if (CellFinder.TryFindRandomReachableCellNear(pawn.Position, pawn.Map, 2, TraverseParms.For(TraverseMode.NoPassClosedDoors, Danger.Deadly, false, false, false), (IntVec3 x) => x.Standable(pawn.Map), (Region x) => true, out IntVec3 cell, 999999))
+                {
+                    FilthMaker.TryMakeFilth(cell, pawn.Map, AmphiDefs.RimMorpho_AmphimorphoGoo, 1, FilthSourceFlags.Pawn);
+                }
+               
+            }
             pawn.skills.Learn(AmphiDefs.RimMorpho_Shifting, 1);
             if (energyConsumed < energy)
             {
@@ -49,6 +59,7 @@ namespace Rimimorpho
             ShiftUtils.GetTransformData(pawn, amphiShifter,TargetA.Pawn,out int ticks, out double energy);
             this.energy = energy;
             //too intensive
+            //TODO: signal to player that pawn cant transform
             if (energy > (pawn.needs.food.CurLevel + pawn.needs.rest.CurLevel) / 2) yield break;
             yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.OnCell);
             RVCLog.Log(ticks);

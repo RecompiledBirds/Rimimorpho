@@ -95,7 +95,7 @@ namespace Rimimorpho
             result += StatDiff(shapeshifterComp.CurrentForm, targetDef);
             if(ModLister.BiotechInstalled)
                 result += StatDiff(pawn.genes.Xenotype,other);
-            return result/(pawn.skills.GetSkill(AmphiDefs.RimMorpho_Shifting).Level/5);
+            return result/((pawn.skills.GetSkill(AmphiDefs.RimMorpho_Shifting).Level/5)+1);
         }
 
         public static int ShiftDifficulty(Pawn pawn, ShapeshifterComp shapeshifterComp, Pawn target)

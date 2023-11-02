@@ -23,14 +23,17 @@ namespace Rimimorpho
                     {
                         return;
                     }
-                    bool hasInfection = pawn.health.hediffSet.HasHediff(AmphiDefs.RimMorpho_AmphimorphoGooInfection);
-                    if (!Rand.Chance(0.1f)) return;
-                    if (hasInfection)
+                    Random random = new Random();
+                    if (random.Next(0,100)>=95)
                     {
-                        pawn.health.hediffSet.GetFirstHediffOfDef(AmphiDefs.RimMorpho_AmphimorphoGooInfection).Severity += 0.3f;
-                        return;
+                        bool hasInfection = pawn.health.hediffSet.HasHediff(AmphiDefs.RimMorpho_AmphimorphoGooInfection);
+                        if (hasInfection)
+                        {
+                            pawn.health.hediffSet.GetFirstHediffOfDef(AmphiDefs.RimMorpho_AmphimorphoGooInfection).Severity += 0.3f;
+                            return;
+                        }
+                        pawn.health.AddHediff(AmphiDefs.RimMorpho_AmphimorphoGooInfection);
                     }
-                    pawn.health.AddHediff(AmphiDefs.RimMorpho_AmphimorphoGooInfection);
                 }
             }
         }

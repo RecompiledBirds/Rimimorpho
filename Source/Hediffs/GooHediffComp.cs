@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Verse;
+using Verse.AI;
 
 namespace Rimimorpho
 {
@@ -23,9 +24,17 @@ namespace Rimimorpho
         {
             base.CompPostTick(ref severityAdjustment);
             float severity = parent.Severity;
-            if (severity <= 0.01)
+            if (severity < 100)
             {
                 severityAdjustment += (float)Math.Pow(parent.Severity,2);
+
+                if (Pawn.def != AmphiDefs.RimMorpho_Amphimorpho) return;
+
+                if(Rand.Chance(severity/100))
+                {
+                    Job job = JobMaker.MakeJob(AmphiDefs.RimMorpho_TransformRandom, parent.pawn);
+                    parent.pawn.jobs.TryTakeOrderedJob(job);
+                }
                 return;
             }
             if (Pawn.def != AmphiDefs.RimMorpho_Amphimorpho)

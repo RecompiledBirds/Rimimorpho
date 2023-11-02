@@ -17,8 +17,7 @@ namespace Rimimorpho
             List<Thing> thingList = pawn.Position.GetThingList(pawn.Map);
             for (int j = thingList.Count - 1; j >= 0; j--)
             {
-                Filth filth = thingList[j] as Filth;
-                if (filth != null && filth.CanFilthAttachNow)
+                if (thingList[j] is Filth filth && filth.CanFilthAttachNow)
                 {
                     if (filth.def != AmphiDefs.RimMorpho_AmphimorphoGoo)
                     {

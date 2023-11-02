@@ -17,7 +17,7 @@
 	</JobDef>
 
 	<JobDef>
-		<defName>RimMorpho_MorphDef</defName>
+		<defName>RimMorpho_TransformRandom</defName>
 		<driverClass>Rimimorpho.TransformJob</driverClass>
 		<reportString>Transforming.</reportString>
 		<casualInterruptible>false</casualInterruptible>

@@ -37,8 +37,9 @@ namespace Rimimorpho
             return $"Transforming.";
         }
 
-        public void ConsumeEnergy()
+        public void ShapeShift()
         {
+            pawn.skills.Learn(AmphiDefs.RimMorpho_Shifting, 1);
             if (energyConsumed < energy)
             {
                 pawn.needs.food.CurLevel -= 0.05f;
@@ -46,6 +47,7 @@ namespace Rimimorpho
                 energyConsumed += 0.1;
             }
         }
+
         private double energyConsumed;
         private double energy;
         protected override IEnumerable<Toil> MakeNewToils()
@@ -53,11 +55,12 @@ namespace Rimimorpho
 
             AmphiShifter amphiShifter = pawn.TryGetComp<AmphiShifter>();
             
+            SetDef(DefDatabase<ThingDef>.AllDefs.Where(x=>x.race!=null).RandomElement());
             ShiftUtils.GetTransformData(pawn, amphiShifter, morphDef, out int ticks, out double energy);
             yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.OnCell);
-            RVCLog.Log(ticks);
+            this.energy=energy;
             Toil waitToil = Toils_General.Wait(ticks).WithProgressBarToilDelay(TargetIndex.B);
-            waitToil.AddPreTickAction(ConsumeEnergy);
+            waitToil.AddPreTickAction(ShapeShift);
             yield return waitToil;
             yield return new Toil
             {

@@ -20,6 +20,7 @@ namespace Rimimorpho
             Harmony harmony = new Harmony("RecompiledBirds.Rimimorpho");
             harmony.Patch(AccessTools.Method(typeof(Pawn_FilthTracker), "TryPickupFilth"), postfix: new HarmonyMethod(typeof(TryPickupFilthPatch), nameof(TryPickupFilthPatch.Postfix)));
             harmony.Patch(AccessTools.Method(typeof(JobDriver_CleanFilth), "MakeNewToils"), postfix: new HarmonyMethod(typeof(CleaningPatch), nameof(CleaningPatch.Postfix)));
+            harmony.Patch(AccessTools.Method(typeof(SkillUI), nameof(SkillUI.DrawSkillsOf)), prefix: new HarmonyMethod(typeof(SkillPatch), nameof(SkillPatch.Prefix)));
             Log.Message("Amphi patches completed!");
         }
     }

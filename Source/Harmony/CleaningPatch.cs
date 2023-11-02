@@ -30,13 +30,12 @@ namespace Rimimorpho
                 {
 
                     Filth filth = (Filth)__instance.job.GetTarget(TargetIndex.A).Thing;
-                    RVCLog.Log("filth is not null",condition:filth!=null);
-                    RVCLog.Log("def match", condition: filth.def==AmphiDefs.RimMorpho_AmphimorphoGoo);
                     if (filth.def != AmphiDefs.RimMorpho_AmphimorphoGoo)
                     {
                         return;
                     }
                     bool hasInfection = pawn.health.hediffSet.HasHediff(AmphiDefs.RimMorpho_AmphimorphoGooInfection);
+                    if (!Rand.Chance(0.1f)) return;
                     if (hasInfection)
                     {
                         pawn.health.hediffSet.GetFirstHediffOfDef(AmphiDefs.RimMorpho_AmphimorphoGooInfection).Severity += 0.3f;

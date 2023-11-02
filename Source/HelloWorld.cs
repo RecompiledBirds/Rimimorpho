@@ -7,7 +7,7 @@ namespace Rimimorpho
     {
         static HelloWorld()
         {
-            Log.Message($"<color=orange>[Rimimorpho]</color> Hello world!");
+            Log.Message($"<color=green>[Rimimorpho]</color> Hello world!");
         }
     }
 }

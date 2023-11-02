@@ -25,6 +25,7 @@ namespace Rimimorpho
             float severity = parent.Severity;
             if (severity <= 0.01)
             {
+                severityAdjustment += (float)Math.Pow(parent.Severity,2);
                 return;
             }
             if (Pawn.def != AmphiDefs.RimMorpho_Amphimorpho)

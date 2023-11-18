@@ -61,7 +61,20 @@ namespace Rimimorpho
             //too intensive
             //TODO: signal to player that pawn cant transform
             if (energy > (pawn.needs.food.CurLevel + pawn.needs.rest.CurLevel) / 2) yield break;
-            yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.OnCell);
+
+            Toil toils_Goto = Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.OnCell);
+            toils_Goto.AddFailCondition(() =>
+            {
+                if (energy > (pawn.needs.food.CurLevel + pawn.needs.rest.CurLevel) / 2)
+                {
+                    Messages.Message("Rimmorpho_CanNotTouchPawn".Translate(pawn.NameShortColored), MessageTypeDefOf.RejectInput);
+                    return true;
+                }
+
+                return false;
+            });
+
+            yield return toils_Goto;
             Toil waitToil =  Toils_General.Wait(ticks).WithProgressBarToilDelay(TargetIndex.B);
             waitToil.AddPreTickAction(ShapeShift);
             yield return waitToil;

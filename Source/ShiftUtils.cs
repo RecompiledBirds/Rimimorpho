@@ -113,7 +113,7 @@ namespace Rimimorpho
         }
         public static void GetTransformData(Pawn pawn, ShapeshifterComp shapeshifterComp, Pawn target, out int ticks, out double energyUsed)
         {
-            GetTransformData(pawn, shapeshifterComp, target.def,out ticks, out energyUsed, target.genes.Xenotype);
+            GetTransformData(pawn, shapeshifterComp, target.def,out ticks, out energyUsed, target.genes!=null?target.genes.Xenotype:XenotypeDefOf.Baseliner);
         }
 
         /// <summary>

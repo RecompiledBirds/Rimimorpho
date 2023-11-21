@@ -21,6 +21,9 @@ namespace Rimimorpho
     public class AmphiShifter : RVCRestructured.Shifter.ShapeshifterComp
     {
         private bool shifted = false;
+        
+        public List<StoredRace> knownRaces= new List<StoredRace>();
+
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
             Pawn pawn = parent as Pawn;
@@ -70,10 +73,21 @@ namespace Rimimorpho
             }
         }
 
+        public override void SetForm(Pawn pawn)
+        {
+            base.SetForm(pawn);
+            if (!knownRaces.Any(x => x.storedDef == pawn.def && (!(x is StoredRaceWithXenoType xenoRace) || xenoRace.storedXenotypeDef == pawn.genes.Xenotype)))
+            {
+                knownRaces.Add(new StoredRaceWithXenoType() { storedDef=pawn.def,storedXenotypeDef=pawn.genes.Xenotype });
+            }
+        }
+
         public override void SetForm(ThingDef def)
         {
             base.SetForm(def);
             raceProperties = null;
+            if (!knownRaces.Any(x => x.storedDef == def))
+                knownRaces.Add(new StoredRace() { storedDef = def });
         }
 
         private int ticksDownedFor = 0;
@@ -99,6 +113,7 @@ namespace Rimimorpho
         {
             Scribe_Values.Look(ref ticksDownedFor, nameof(ticksDownedFor));
             Scribe_Values.Look(ref shifted, nameof(shifted));
+            Scribe_Collections.Look(ref knownRaces,nameof(knownRaces),LookMode.Deep);
             base.PostExposeData();
         }
     }

@@ -17,10 +17,23 @@ namespace Rimimorpho
             List<Thing> thingList = pawn.Position.GetThingList(pawn.Map);
             for (int j = thingList.Count - 1; j >= 0; j--)
             {
-                Filth filth = thingList[j] as Filth;
-                if (filth != null && filth.CanFilthAttachNow)
+                if (thingList[j] is Filth filth && filth.CanFilthAttachNow)
                 {
-                    //add hediff
+                    if (filth.def != AmphiDefs.RimMorpho_AmphimorphoGoo)
+                    {
+                        return;
+                    }
+                    Random random = new Random();
+                    if (random.Next(0,100)>=95)
+                    {
+                        bool hasInfection = pawn.health.hediffSet.HasHediff(AmphiDefs.RimMorpho_AmphimorphoGooInfection);
+                        if (hasInfection)
+                        {
+                            pawn.health.hediffSet.GetFirstHediffOfDef(AmphiDefs.RimMorpho_AmphimorphoGooInfection).Severity += 0.3f;
+                            return;
+                        }
+                        pawn.health.AddHediff(AmphiDefs.RimMorpho_AmphimorphoGooInfection);
+                    }
                 }
             }
         }

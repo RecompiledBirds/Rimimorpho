@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 using Verse;
 using Verse.AI;
 
@@ -30,19 +31,21 @@ namespace Rimimorpho
                 {
 
                     Filth filth = (Filth)__instance.job.GetTarget(TargetIndex.A).Thing;
-                    RVCLog.Log("filth is not null",condition:filth!=null);
-                    RVCLog.Log("def match", condition: filth.def==AmphiDefs.RimMorpho_AmphimorphoGoo);
                     if (filth.def != AmphiDefs.RimMorpho_AmphimorphoGoo)
                     {
                         return;
                     }
-                    bool hasInfection = pawn.health.hediffSet.HasHediff(AmphiDefs.RimMorpho_AmphimorphoGooInfection);
-                    if (hasInfection)
+                    System.Random random = new System.Random();
+                    if (random.Next(0, 100) >= 95)
                     {
-                        pawn.health.hediffSet.GetFirstHediffOfDef(AmphiDefs.RimMorpho_AmphimorphoGooInfection).Severity += 0.3f;
-                        return;
+                        bool hasInfection = pawn.health.hediffSet.HasHediff(AmphiDefs.RimMorpho_AmphimorphoGooInfection);
+                        if (hasInfection)
+                        {
+                            pawn.health.hediffSet.GetFirstHediffOfDef(AmphiDefs.RimMorpho_AmphimorphoGooInfection).Severity += 0.3f;
+                            return;
+                        }
+                        pawn.health.AddHediff(AmphiDefs.RimMorpho_AmphimorphoGooInfection);
                     }
-                    pawn.health.AddHediff(AmphiDefs.RimMorpho_AmphimorphoGooInfection);
                 }
             };
 

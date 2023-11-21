@@ -1,4 +1,5 @@
-﻿using RVCRestructured;
+﻿using RimWorld;
+using RVCRestructured;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,22 +22,48 @@ namespace Rimimorpho
         {
             return $"Touching {(TargetA.Pawn.Name!=null?TargetA.Pawn.Name.ToStringShort:TargetA.Pawn.Label)}.";
         }
-
-        public void ConsumeEnergy()
+        Random random = new Random();
+        public void ShapeShift()
         {
-            pawn.needs.food.CurLevel -= 0.05f;
+
+            if (random.Next(1, 100) >= 95)
+            {
+                if (CellFinder.TryFindRandomReachableCellNear(pawn.Position, pawn.Map, 2, TraverseParms.For(TraverseMode.NoPassClosedDoors, Danger.Deadly, false, false, false), (IntVec3 x) => x.Standable(pawn.Map), (Region x) => true, out IntVec3 cell, 999999))
+                {
+                    FilthMaker.TryMakeFilth(cell, pawn.Map, AmphiDefs.RimMorpho_AmphimorphoGoo, 1, FilthSourceFlags.Pawn);
+                }
+               
+            }
+            pawn.skills.Learn(AmphiDefs.RimMorpho_Shifting, 1);
+            if (energyConsumed < energy)
+            {
+                pawn.needs.food.CurLevel -= 0.05f;
+                pawn.needs.rest.CurLevel -= 0.05f;
+                energyConsumed += 0.1;
+            }
         }
+
+        public override void ExposeData()
+        {
+            Scribe_Values.Look(ref energy, nameof(energy));
+            Scribe_Values.Look(ref energyConsumed, nameof(energyConsumed));
+            base.ExposeData();
+        }
+        private double energyConsumed;
+        private double energy;
 
         protected override IEnumerable<Toil> MakeNewToils()
         {
             
             AmphiShifter amphiShifter = pawn.TryGetComp<AmphiShifter>();
-            int morphTicks = ShiftUtils.ShiftDifficulty(pawn, amphiShifter,TargetA.Pawn.def);
-            
+            ShiftUtils.GetTransformData(pawn, amphiShifter,TargetA.Pawn,out int ticks, out double energy);
+            this.energy = energy;
+            //too intensive
+            //TODO: signal to player that pawn cant transform
+            if (energy > (pawn.needs.food.CurLevel + pawn.needs.rest.CurLevel) / 2) yield break;
             yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.OnCell);
-            RVCLog.Log(morphTicks);
-            Toil waitToil =  Toils_General.Wait(morphTicks).WithProgressBarToilDelay(TargetIndex.B);
-            waitToil.AddPreTickAction(ConsumeEnergy);
+            Toil waitToil =  Toils_General.Wait(ticks).WithProgressBarToilDelay(TargetIndex.B);
+            waitToil.AddPreTickAction(ShapeShift);
             yield return waitToil;
             yield return new Toil
             {

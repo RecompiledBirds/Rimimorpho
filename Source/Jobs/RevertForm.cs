@@ -14,12 +14,17 @@ namespace Rimimorpho
         {
             return pawn.Reserve(job.targetA, job, 1, -1, null, errorOnFailed);
         }
+        public void ShapeShift()
+        {
+            pawn.skills.Learn(AmphiDefs.RimMorpho_Shifting, 0.3f);
+        }
 
         protected override IEnumerable<Toil> MakeNewToils()
         {
             AmphiShifter amphiShifter = pawn.TryGetComp<AmphiShifter>();
-            int morphTicks = ShiftUtils.ShiftDifficulty(pawn, amphiShifter, TargetA.Pawn.def);
-            yield return Toils_General.Wait(morphTicks).WithProgressBarToilDelay(TargetIndex.A);
+            ShiftUtils.GetTransformData(pawn, amphiShifter, TargetA.Pawn, out int ticks, out double energy);
+            Toil waitToil= Toils_General.Wait(ticks).WithProgressBarToilDelay(TargetIndex.A);
+            waitToil.AddPreTickAction(ShapeShift);
             yield return new Toil
             {
                 initAction = delegate

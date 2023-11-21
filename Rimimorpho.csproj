@@ -11,7 +11,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Krafs.Rimworld.Ref" Version="1.4.3524" />
+		<PackageReference Include="Krafs.Rimworld.Ref" Version="1.4.3901" />
 		<PackageReference Include="Lib.Harmony" Version="2.2.2" />
 	</ItemGroup>
 
@@ -22,7 +22,7 @@
 
 	<ItemGroup>
 	  <Reference Include="RimValiCore RW">
-	    <HintPath>..\RimValiCore-RW\1.4\Assemblies\RimValiCore RW.dll</HintPath>
+	    <HintPath>..\Vine\1.4\Assemblies\RimValiCore RW.dll</HintPath>
 	    <Private>False</Private>
 	  </Reference>
 	</ItemGroup>

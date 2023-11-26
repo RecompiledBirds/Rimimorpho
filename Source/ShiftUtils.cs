@@ -103,17 +103,18 @@ namespace Rimimorpho
             return ShiftDifficulty(pawn,shapeshifterComp,target.def,target.genes.Xenotype);
         }
 
-        public static void GetTransformData(Pawn pawn, ShapeshifterComp shapeshifterComp, ThingDef targetDef, out int ticks, out double energyUsed,XenotypeDef other = null)
+        public static void GetTransformData(Pawn pawn, ShapeshifterComp shapeshifterComp, ThingDef targetDef, out float workTicks, out double energyUsed, XenotypeDef other = null)
         {
             int difficulty = ShiftDifficulty(pawn, shapeshifterComp, targetDef, other);
             double x= DifficultyToEnergyXVal(difficulty);
             energyUsed = DifficultyToEnergy(difficulty,x);
-            ticks = TicksForTransform(difficulty, energyUsed, x);
+            workTicks = TicksForTransform(difficulty, energyUsed, x);
 
         }
-        public static void GetTransformData(Pawn pawn, ShapeshifterComp shapeshifterComp, Pawn target, out int ticks, out double energyUsed)
+
+        public static void GetTransformData(Pawn pawn, ShapeshifterComp shapeshifterComp, Pawn target, out float workTicks, out double energyUsed)
         {
-            GetTransformData(pawn, shapeshifterComp, target.def,out ticks, out energyUsed,target.genes?.Xenotype);
+            GetTransformData(pawn, shapeshifterComp, target.def, out workTicks, out energyUsed,target.genes?.Xenotype);
         }
 
         /// <summary>
@@ -138,10 +139,10 @@ namespace Rimimorpho
             return Math.Min((Math.Log(energyX) * 0.301) / 2, 2);
         }
 
-        public static int TicksForTransform(float difficulty,double energy, double energyX)
+        public static float TicksForTransform(float difficulty, double energy, double energyX)
         {
             //t(x)=10((d(x)/4)^2k(x))+60
-            return (int)(10 *Math.Pow(energyX/4,2*energy)+60);
+            return (float)(10 * Math.Pow(energyX / 4, 2 * energy) + 60);
         }
 
     }

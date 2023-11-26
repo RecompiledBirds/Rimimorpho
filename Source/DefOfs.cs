@@ -18,5 +18,6 @@ namespace Rimimorpho
         public static ThingDef RimMorpho_AmphimorphoGoo;
         public static HediffDef RimMorpho_AmphimorphoGooInfection;
         public static SkillDef RimMorpho_Shifting;
+        public static StatDef RimMorpho_TransformationStat;
     }
 }

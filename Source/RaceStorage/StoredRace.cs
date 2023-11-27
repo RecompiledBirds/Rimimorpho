@@ -52,5 +52,10 @@ namespace Rimimorpho
         {
            return $"{GetHashCode()}";
         }
+
+        public override string ToString()
+        {
+            return $"ThingDef: {ThingDef?.label}, XenotypeDef: {XenotypeDef?.label}";
+        }
     }
 }

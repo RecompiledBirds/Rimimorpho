@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+	<Rimimorpho_CanNotTouchPawn>{0} does not have enough food or sleep to do this.</Rimimorpho_CanNotTouchPawn>
+	<Rimimorpho_CanNeverTouchPawn>{0} is not skilled enough to transform into {1}.</Rimimorpho_CanNeverTouchPawn>
+</LanguageData>
+

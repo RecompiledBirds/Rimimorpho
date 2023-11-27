@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using RVCRestructured.Shifter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,6 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 using Verse.AI;
-using static UnityEngine.GraphicsBuffer;
 
 namespace Rimimorpho
 {
@@ -18,12 +18,13 @@ namespace Rimimorpho
             this.compClass=typeof(AmphiShifter);
         }
     }
-    public class AmphiShifter : RVCRestructured.Shifter.ShapeshifterComp
+    public class AmphiShifter : ShapeshifterComp
     {
         private bool shifted = false;
         
-        public List<StoredRace> knownRaces= new List<StoredRace>();
+        public List<StoredRace> knownRaces = new List<StoredRace>();
 
+        //TODO: Make strings translateable
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
             Pawn pawn = parent as Pawn;
@@ -35,11 +36,12 @@ namespace Rimimorpho
                 {
                     canTargetAnimals = true,
                     canTargetPawns = true,
-                    canTargetHumans = true
+                    canTargetHumans = true,
+                    canTargetSelf = false
                 },
                 action = delegate (LocalTargetInfo target)
                 {
-                    Job job = JobMaker.MakeJob(AmphiDefs.RimMorpho_TouchPawn, target.Pawn);
+                    Job job = JobMaker.MakeJob(AmphiDefs.RimMorpho_TouchPawn, target.Pawn, pawn);
                     pawn.jobs.TryTakeOrderedJob(job);
                 }
             };
@@ -54,8 +56,18 @@ namespace Rimimorpho
                 }
 
             };
+            Command_Action transMenu = new Command_Action
+            {
+                defaultLabel = "Open Transformation Menu",
+                icon = AmphiDefs.RimMorpho_Amphimorpho.uiIcon,
+                action = delegate ()
+                {
+                    Find.WindowStack.Add(new TransformationSelectionWindow(pawn));
+                }
+            };
             yield return command;
             yield return revert;
+            yield return transMenu;
         }
 
         private RaceProperties raceProperties = null;
@@ -76,21 +88,19 @@ namespace Rimimorpho
         public override void SetForm(Pawn pawn)
         {
             base.SetForm(pawn);
-            /*
-            if (!knownRaces.Any(x => x.storedDef == pawn.def && (!(x is StoredRaceWithXenoType xenoRace) || xenoRace.storedXenotypeDef == pawn.genes.Xenotype)))
+
+            if (!knownRaces.Any(race => race.ContainsFeature(pawn.def, pawn.genes.Xenotype)))
             {
-                knownRaces.Add(new StoredRaceWithXenoType() { storedDef=pawn.def,storedXenotypeDef=pawn.genes.Xenotype });
+                knownRaces.Add(new StoredRace(pawn.def, pawn.genes.Xenotype));
             }
-            */
         }
 
         public override void SetForm(ThingDef def)
         {
             base.SetForm(def);
             raceProperties = null;
-            /*
-            if (!knownRaces.Any(x => x.storedDef == def))
-                knownRaces.Add(new StoredRace() { storedDef = def });*/
+
+            if (!knownRaces.Any(race => race.ContainsFeature(def))) knownRaces.Add(new StoredRace(def));
         }
 
         private int ticksDownedFor = 0;
@@ -117,7 +127,7 @@ namespace Rimimorpho
             Scribe_Values.Look(ref ticksDownedFor, nameof(ticksDownedFor));
             Scribe_Values.Look(ref shifted, nameof(shifted));
             base.PostExposeData();
-          //  Scribe_Collections.Look(ref knownRaces,nameof(knownRaces),LookMode.Deep);
+            Scribe_Collections.Look(ref knownRaces, nameof(knownRaces), LookMode.Deep);
         }
     }
 

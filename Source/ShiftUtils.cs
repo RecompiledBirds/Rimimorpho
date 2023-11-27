@@ -90,12 +90,13 @@ namespace Rimimorpho
 
         public static int ShiftDifficulty(Pawn pawn, ShapeshifterComp shapeshifterComp, ThingDef targetDef,XenotypeDef other = null)
         {
-            if (other == null) other = XenotypeDefOf.Baseliner;
             int result = 0;
+            
             result += StatDiff(shapeshifterComp.CurrentForm, targetDef);
-            if(ModLister.BiotechInstalled)
+            RVCLog.Log(result);
+            if(ModLister.BiotechInstalled && other!=null)
                 result += StatDiff(pawn.genes.Xenotype,other);
-            return result/((pawn.skills.GetSkill(AmphiDefs.RimMorpho_Shifting).Level/5)+1);
+            return result/(((pawn.skills.GetSkill(AmphiDefs.RimMorpho_Shifting).Level+1)/5)+1);
         }
 
         public static int ShiftDifficulty(Pawn pawn, ShapeshifterComp shapeshifterComp, Pawn target)
@@ -106,9 +107,12 @@ namespace Rimimorpho
         public static void GetTransformData(Pawn pawn, ShapeshifterComp shapeshifterComp, ThingDef targetDef, out int ticks, out double energyUsed,XenotypeDef other = null)
         {
             int difficulty = ShiftDifficulty(pawn, shapeshifterComp, targetDef, other);
+            RVCLog.Log(difficulty);
             double x= DifficultyToEnergyXVal(difficulty);
+            RVCLog.Log(x);
             energyUsed = DifficultyToEnergy(difficulty,x);
             ticks = TicksForTransform(difficulty, energyUsed, x);
+            RVCLog.Log(ticks);
 
         }
         public static void GetTransformData(Pawn pawn, ShapeshifterComp shapeshifterComp, Pawn target, out int ticks, out double energyUsed)

@@ -21,6 +21,8 @@
 				<texPath>Amphimorpho/BaseTexture/Tail/Tail</texPath>
 				<alternateMaskPaths>
 					<li>Amphimorpho/Variant_1/Tail/Tail</li>
+					<li>Amphimorpho/Variant_2/Tail/Tail</li>
+					<li>Amphimorpho/Variant_3/Tail/Tail</li>
 				</alternateMaskPaths>
 			</li>
 		</textures>

@@ -21,6 +21,8 @@
 				<texPath>Amphimorpho/BaseTexture/Head/Head</texPath>
 				<alternateMaskPaths>
 					<li>Amphimorpho/Variant_1/Head/Head</li>
+					<li>Amphimorpho/Variant_2/Head/Head</li>
+					<li>Amphimorpho/Variant_3/Head/Head</li>
 				</alternateMaskPaths>
 			</li>
 		</textures>

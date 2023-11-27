@@ -60,7 +60,11 @@ namespace Rimimorpho
             this.energy = energy;
             //too intensive
             //TODO: signal to player that pawn cant transform
-            if (energy > (pawn.needs.food.CurLevel + pawn.needs.rest.CurLevel) / 2) yield break;
+            RVCLog.Log(energy);
+            RVCLog.Log((pawn.needs.food.CurLevel + pawn.needs.rest.CurLevel));
+            RVCLog.Log("too much energy needed",condition:(energy> (pawn.needs.food.CurLevel + pawn.needs.rest.CurLevel)));
+            RVCLog.Log(ticks);
+            if (energy > (pawn.needs.food.CurLevel + pawn.needs.rest.CurLevel)) yield break;
             yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.OnCell);
             Toil waitToil =  Toils_General.Wait(ticks).WithProgressBarToilDelay(TargetIndex.B);
             waitToil.AddPreTickAction(ShapeShift);

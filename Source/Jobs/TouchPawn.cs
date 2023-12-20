@@ -48,20 +48,19 @@ namespace Rimimorpho
             Toil preWorkSetup = ToilMaker.MakeToil("MakeNewToils");
             Toil gotoToil = Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.Touch);
             Toil doWork = ToilMaker.MakeToil("MakeNewToils");
-
             bool EnergyFailCondition()
             {
                 double energyNeeded = (energy - energyConsumedTotal) / 2;
 
                 if (energyNeeded > 1f)
                 {
-                    Messages.Message("Rimimorpho_CanNeverTouchPawn".Translate(doWork.actor.NameShortColored, TargetA.Label), doWork.actor, MessageTypeDefOf.RejectInput);
+                    Messages.Message("Rimimorpho_CanNeverTouchPawn".Translate(doWork.actor.NameShortColored.Named("NAME"), TargetA.Pawn?.def.label.Named("RACE") ?? "Unknown".Named("RACE")), doWork.actor, MessageTypeDefOf.RejectInput);
                     return true; 
                 }
 
                 if (energyNeeded > doWork.actor.needs.food.CurLevel || energyNeeded > doWork.actor.needs.rest.CurLevel)
                 {
-                    Messages.Message("Rimimorpho_CanNotTouchPawn".Translate(doWork.actor.NameShortColored), doWork.actor, MessageTypeDefOf.RejectInput);
+                    Messages.Message("Rimimorpho_CanNotTouchPawn".Translate(doWork.actor.NameShortColored.Named("NAME"),TargetA.Pawn?.def.label.Named("RACE") ??"Unknown".Named("RACE")), doWork.actor, MessageTypeDefOf.RejectInput);
                     return true;
                 }
 

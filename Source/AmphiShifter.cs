@@ -1,13 +1,13 @@
 ﻿using RimWorld;
 using RVCRestructured.Shifter;
 using System;
+using Verse;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
-using Verse;
 using Verse.AI;
 
 namespace Rimimorpho
@@ -89,9 +89,9 @@ namespace Rimimorpho
         {
             base.SetForm(pawn);
 
-            if (!knownRaces.Any(race => race.ContainsFeature(pawn.def, pawn.genes.Xenotype)))
+            if (!Enumerable.Any(knownRaces, race => race.ContainsFeature(pawn.def, pawn?.genes?.Xenotype)))
             {
-                knownRaces.Add(new StoredRace(pawn.def, pawn.genes.Xenotype));
+                knownRaces.Add(new StoredRace(pawn.def, pawn?.genes?.Xenotype));
             }
         }
 
@@ -100,7 +100,7 @@ namespace Rimimorpho
             base.SetForm(def);
             raceProperties = null;
 
-            if (!knownRaces.Any(race => race.ContainsFeature(def))) knownRaces.Add(new StoredRace(def));
+            if (!Enumerable.Any(knownRaces, race => race.ContainsFeature(def) == true)) knownRaces.Add(new StoredRace(def));
         }
 
         private int ticksDownedFor = 0;

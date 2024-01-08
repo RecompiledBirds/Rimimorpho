@@ -47,25 +47,13 @@ namespace Rimimorpho
         {
             Toil preWorkSetup = ToilMaker.MakeToil("MakeNewToils");
             Toil gotoToil = Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.Touch);
+            
             Toil doWork = ToilMaker.MakeToil("MakeNewToils");
-            bool EnergyFailCondition()
-            {
-                double energyNeeded = (energy - energyConsumedTotal) / 2;
-
-                if (energyNeeded > 1f)
-                {
-                    Messages.Message("Rimimorpho_CanNeverTouchPawn".Translate(doWork.actor.NameShortColored.Named("NAME"), TargetA.Pawn?.def.label.Named("RACE") ?? "Unknown".Named("RACE")), doWork.actor, MessageTypeDefOf.RejectInput);
-                    return true; 
-                }
-
-                if (energyNeeded > doWork.actor.needs.food.CurLevel || energyNeeded > doWork.actor.needs.rest.CurLevel)
-                {
-                    Messages.Message("Rimimorpho_CanNotTouchPawn".Translate(doWork.actor.NameShortColored.Named("NAME"),TargetA.Pawn?.def.label.Named("RACE") ??"Unknown".Named("RACE")), doWork.actor, MessageTypeDefOf.RejectInput);
-                    return true;
-                }
-
-                return false;
-            }
+            doWork.activeSkill = () => AmphiDefs.RimMorpho_Shifting;
+            doWork.socialMode = RandomSocialMode.SuperActive;
+            doWork.defaultCompleteMode = ToilCompleteMode.Never;
+            
+            
 
             preWorkSetup.initAction = () =>
             {
@@ -82,15 +70,15 @@ namespace Rimimorpho
             {
                 float adjustedSkillVal = doWork.actor.GetStatValue(AmphiDefs.RimMorpho_TransformationStat);
                 workLeft -= adjustedSkillVal;
-
+                /*
                 float energyConsumed = (float)(adjustedSkillVal / workOriginal * energy);
                 doWork.actor.needs.food.CurLevel -= energyConsumed / 2f;
                 doWork.actor.needs.rest.CurLevel -= energyConsumed / 2f;
                 energyConsumedTotal += energyConsumed;
-
+                */
                 doWork.actor.skills?.Learn(AmphiDefs.RimMorpho_Shifting, 1f, false);
 
-                if (random.Next(1, 100) >= 95)
+                if (random.Next(1, 100) >= 99)
                 {
                     if (CellFinder.TryFindRandomReachableCellNear(doWork.actor.Position, doWork.actor.Map, 2, TraverseParms.For(TraverseMode.NoPassClosedDoors, Danger.Deadly, false, false, false), (IntVec3 x) => x.Standable(doWork.actor.Map), (Region x) => true, out IntVec3 cell, 999999))
                     {
@@ -101,21 +89,17 @@ namespace Rimimorpho
                 if (workLeft <= 0f)
                 {
                     RVCLog.Log($"Workamount: {workLeft}, current food level: {doWork.actor.needs.food.CurLevel}", debugOnly: true);
-                    doWork.actor.TryGetComp<AmphiShifter>().SetForm(TargetA.Pawn);
+                    doWork.actor.TryGetComp<AmphiShifter>().LearnRace(TargetA.Pawn);
                     ReadyForNextToil();
                 }
             };
 
             preWorkSetup.defaultCompleteMode = ToilCompleteMode.Instant; 
 
-            gotoToil.AddFailCondition(EnergyFailCondition);
-            doWork.AddFailCondition(EnergyFailCondition);
 
             doWork.WithProgressBar(TargetIndex.B, () => 1f - workLeft / workOriginal);
-            doWork.socialMode = RandomSocialMode.Quiet;
-            doWork.defaultCompleteMode = ToilCompleteMode.Never;
-            doWork.activeSkill = () => AmphiDefs.RimMorpho_Shifting;
 
+            
             yield return preWorkSetup;
             yield return gotoToil;
             yield return doWork;

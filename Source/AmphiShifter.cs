@@ -24,13 +24,33 @@ namespace Rimimorpho
         
         public List<StoredRace> knownRaces = new List<StoredRace>();
 
+        public void LearnRace(Pawn pawn)
+        {
+            if (!Enumerable.Any(knownRaces, race => race.ContainsFeature(pawn.def, pawn?.genes?.Xenotype)))
+            {
+                knownRaces.Add(new StoredRace(pawn.def, pawn?.genes?.Xenotype));
+            }
+        }
+
+        public void LearnRace(ThingDef def, XenotypeDef xenotypeDef)
+        {
+            if (!Enumerable.Any(knownRaces, race => race.ContainsFeature(def, xenotypeDef)))
+            {
+                knownRaces.Add(new StoredRace(def,xenotypeDef));
+            }
+        }
+
+        public void LearnRace(ThingDef def)
+        {
+            if (!Enumerable.Any(knownRaces, race => race.ContainsFeature(def) == true)) knownRaces.Add(new StoredRace(def));
+        }
         //TODO: Make strings translateable
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
             Pawn pawn = parent as Pawn;
             Command_Target command = new Command_Target
             {
-                defaultLabel = "tuch",
+                defaultLabel = "Rimimorpho_LearnRace".Translate(),
                 icon = AmphiDefs.RimMorpho_Amphimorpho.uiIcon,
                 targetingParams = new TargetingParameters
                 {
@@ -47,7 +67,7 @@ namespace Rimimorpho
             };
             Command_Action revert = new Command_Action
             {
-                defaultLabel = "fuck go back",
+                defaultLabel = "Rimimorpho_RevertForm".Translate(),
                 icon = AmphiDefs.RimMorpho_Amphimorpho.uiIcon,
                 action = delegate ()
                 {
@@ -58,7 +78,7 @@ namespace Rimimorpho
             };
             Command_Action transMenu = new Command_Action
             {
-                defaultLabel = "Open Transformation Menu",
+                defaultLabel = "Rimimorpho_OpenTransformationWindow".Translate(),
                 icon = AmphiDefs.RimMorpho_Amphimorpho.uiIcon,
                 action = delegate ()
                 {
@@ -89,10 +109,7 @@ namespace Rimimorpho
         {
             base.SetForm(pawn);
 
-            if (!Enumerable.Any(knownRaces, race => race.ContainsFeature(pawn.def, pawn?.genes?.Xenotype)))
-            {
-                knownRaces.Add(new StoredRace(pawn.def, pawn?.genes?.Xenotype));
-            }
+            
         }
 
         public override void SetForm(ThingDef def)

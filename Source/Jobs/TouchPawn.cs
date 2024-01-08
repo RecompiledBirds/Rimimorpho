@@ -81,12 +81,7 @@ namespace Rimimorpho
                 learningBonus -= dist;
                 float adjustedSkillVal = doWork.actor.GetStatValue(AmphiDefs.RimMorpho_TransformationStat);
                 workLeft -= adjustedSkillVal+learningBonus;
-                /*
-                float energyConsumed = (float)(adjustedSkillVal / workOriginal * energy);
-                doWork.actor.needs.food.CurLevel -= energyConsumed / 2f;
-                doWork.actor.needs.rest.CurLevel -= energyConsumed / 2f;
-                energyConsumedTotal += energyConsumed;
-                */
+
                 doWork.actor.skills?.Learn(AmphiDefs.RimMorpho_Shifting, 1f, false);
 
                 if (random.Next(1, 100) >= 99)

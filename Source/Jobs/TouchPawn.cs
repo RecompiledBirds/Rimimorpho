@@ -40,7 +40,7 @@ namespace Rimimorpho
 
         public override string GetReport()
         {
-            return $"Touching {(TargetA.Pawn.Name!=null?TargetA.Pawn.Name.ToStringShort:TargetA.Pawn.Label)}.";
+            return "Rimimorpho_LearningFromPawn".Translate((TargetA.Pawn.Name != null ? TargetA.Pawn.Name.ToStringShort : TargetA.Pawn.Label).Named("TARGET_NAME"));
         }
 
         protected override IEnumerable<Toil> MakeNewToils()
@@ -58,6 +58,8 @@ namespace Rimimorpho
             preWorkSetup.initAction = () =>
             {
                 ShiftUtils.GetTransformData(doWork.actor, doWork.actor.TryGetComp<AmphiShifter>(), TargetA.Pawn.def, out workLeft, out energy);
+                //The pawn isnt actually shifting, so we can make this task a bit easier.
+                workLeft /= 3;
                 workOriginal = workLeft;
                 RVCLog.Log($"Workamount: {workLeft}, " +
                     $"current food level: {doWork.actor.needs.food.CurLevel}, " +
@@ -68,8 +70,17 @@ namespace Rimimorpho
 
             doWork.tickAction = () =>
             {
+                float dist = doWork.actor.Position.DistanceTo(TargetA.Pawn.Position);
+                if (dist > 9)
+                {
+                    if(!doWork.actor.pather.Moving)
+                        doWork.actor.pather.StartPath(TargetA.Pawn.Position,PathEndMode.ClosestTouch);
+                    return;
+                }
+                float learningBonus = 5;
+                learningBonus -= dist;
                 float adjustedSkillVal = doWork.actor.GetStatValue(AmphiDefs.RimMorpho_TransformationStat);
-                workLeft -= adjustedSkillVal;
+                workLeft -= adjustedSkillVal+learningBonus;
                 /*
                 float energyConsumed = (float)(adjustedSkillVal / workOriginal * energy);
                 doWork.actor.needs.food.CurLevel -= energyConsumed / 2f;

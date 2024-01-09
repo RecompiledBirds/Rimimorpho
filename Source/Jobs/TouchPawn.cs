@@ -71,7 +71,7 @@ namespace Rimimorpho
             doWork.tickAction = () =>
             {
                 float dist = doWork.actor.Position.DistanceTo(TargetA.Pawn.Position);
-                if (dist > 9)
+                if (dist > 5)
                 {
                     if(!doWork.actor.pather.Moving)
                         doWork.actor.pather.StartPath(TargetA.Pawn.Position,PathEndMode.ClosestTouch);
@@ -95,7 +95,7 @@ namespace Rimimorpho
                 if (workLeft <= 0f)
                 {
                     RVCLog.Log($"Workamount: {workLeft}, current food level: {doWork.actor.needs.food.CurLevel}", debugOnly: true);
-                    doWork.actor.TryGetComp<AmphiShifter>().LearnRace(TargetA.Pawn);
+                    doWork.actor.TryGetComp<AmphiShifter>().LearnSpecies(TargetA.Pawn);
                     ReadyForNextToil();
                 }
             };

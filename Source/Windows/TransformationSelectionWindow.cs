@@ -12,7 +12,7 @@ namespace Rimimorpho
     {
         private const float margin = 5f;
 
-        private static readonly Vector2 initSize = new Vector2(300, 600);
+        private static readonly Vector2 initSize = new Vector2(860, 540);
 
         private static readonly Rect window = new Rect(new Vector2(), initSize);
         private static readonly Rect windowMargin = window.ContractedBy(5f);

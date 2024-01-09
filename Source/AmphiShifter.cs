@@ -1,13 +1,10 @@
-﻿using RimWorld;
+﻿using Rimimorpho.Windows;
+using RimWorld;
 using RVCRestructured.Shifter;
-using System;
-using Verse;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+using Verse;
 using Verse.AI;
 
 namespace Rimimorpho
@@ -22,27 +19,55 @@ namespace Rimimorpho
     {
         private bool shifted = false;
         
-        public List<StoredRace> knownRaces = new List<StoredRace>();
+        public Dictionary<ThingDef,List<StoredRace>> knownSpecies = new Dictionary<ThingDef, List<StoredRace>>();
 
-        public void LearnRace(Pawn pawn)
+        public void LearnSpecies(Pawn pawn)
         {
-            if (!Enumerable.Any(knownRaces, race => race.ContainsFeature(pawn.def, pawn?.genes?.Xenotype)))
+            Log.Message("test");
+            if (knownSpecies == null) { knownSpecies = new Dictionary<ThingDef, List<StoredRace>>(); }
+            if (!knownSpecies.ContainsKey(pawn.def))
             {
-                knownRaces.Add(new StoredRace(pawn.def, pawn?.genes?.Xenotype));
+                knownSpecies.Add(pawn.def, new List<StoredRace>());
+                knownSpecies[pawn.def].Add(new StoredRace(pawn.def, pawn?.genes?.Xenotype));
+                return;
+            }
+            
+            if (!Enumerable.Any(knownSpecies[pawn.def], race => race.ContainsFeature(pawn.def, pawn?.genes?.Xenotype)))
+            {
+                knownSpecies[pawn.def].Add(new StoredRace(pawn.def, pawn.genes?.Xenotype));
             }
         }
 
-        public void LearnRace(ThingDef def, XenotypeDef xenotypeDef)
+        public void LearnSpecies(ThingDef def, XenotypeDef xenotypeDef)
         {
-            if (!Enumerable.Any(knownRaces, race => race.ContainsFeature(def, xenotypeDef)))
+            if (knownSpecies[def].NullOrEmpty())
             {
-                knownRaces.Add(new StoredRace(def,xenotypeDef));
+                knownSpecies[def] = new List<StoredRace>
+                {
+                    new StoredRace(def, xenotypeDef)
+                };
+                return;
+            }
+            if (!Enumerable.Any(knownSpecies[def], race => race.ContainsFeature(def, xenotypeDef)))
+            {
+                knownSpecies[def].Add(new StoredRace(def, xenotypeDef));
             }
         }
 
-        public void LearnRace(ThingDef def)
+        public void LearnSpecies(ThingDef def)
         {
-            if (!Enumerable.Any(knownRaces, race => race.ContainsFeature(def) == true)) knownRaces.Add(new StoredRace(def));
+            if (knownSpecies[def].NullOrEmpty())
+            {
+                knownSpecies[def] = new List<StoredRace>
+                {
+                    new StoredRace(def)
+                };
+                return;
+            }
+            if (!Enumerable.Any(knownSpecies[def], race => race.ContainsFeature(def)))
+            {
+                knownSpecies[def].Add(new StoredRace(def));
+            }
         }
         //TODO: Make strings translateable
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
@@ -82,7 +107,7 @@ namespace Rimimorpho
                 icon = AmphiDefs.RimMorpho_Amphimorpho.uiIcon,
                 action = delegate ()
                 {
-                    Find.WindowStack.Add(new TransformationSelectionWindow(pawn));
+                    Find.WindowStack.Add(new Ivy_TransformationWindow(pawn));
                 }
             };
             yield return command;
@@ -115,9 +140,6 @@ namespace Rimimorpho
         public override void SetForm(ThingDef def)
         {
             base.SetForm(def);
-            raceProperties = null;
-
-            if (!Enumerable.Any(knownRaces, race => race.ContainsFeature(def) == true)) knownRaces.Add(new StoredRace(def));
         }
 
         private int ticksDownedFor = 0;
@@ -143,8 +165,38 @@ namespace Rimimorpho
         {
             Scribe_Values.Look(ref ticksDownedFor, nameof(ticksDownedFor));
             Scribe_Values.Look(ref shifted, nameof(shifted));
+            int raceCount = knownSpecies.Values.Count;
+            Scribe_Values.Look(ref raceCount, nameof(raceCount));
+            List<ThingDef> saveDefs;
+            List<List<StoredRace>> raceLists;
             base.PostExposeData();
-            Scribe_Collections.Look(ref knownRaces, nameof(knownRaces), LookMode.Deep);
+            if (Scribe.mode == LoadSaveMode.Saving)
+            {
+                saveDefs = knownSpecies.Keys.ToList();
+                raceLists = knownSpecies.Values.ToList();
+                Scribe_Collections.Look(ref saveDefs, nameof(saveDefs));
+                for (int i = 0; i < raceCount; i++)
+                {
+                    List<StoredRace> raceList = raceLists[i];
+                    Scribe_Collections.Look(ref raceList, $"{nameof(raceList)}_{saveDefs[i].defName}", LookMode.Deep);
+                }
+            }
+            if(Scribe.mode==LoadSaveMode.LoadingVars)
+            {
+                saveDefs = new List<ThingDef>();
+                raceLists = new List<List<StoredRace>>();
+                Scribe_Collections.Look(ref saveDefs, nameof(saveDefs));
+                for (int i = 0; i < raceCount; i++)
+                {
+                    List<StoredRace> raceList = new List<StoredRace>();
+                    Scribe_Collections.Look(ref raceList, $"{nameof(raceList)}_{saveDefs[i].defName}", LookMode.Deep);
+                    raceLists.Add(raceList);
+                }
+                for(int i  = 0; i < saveDefs.Count; i++)
+                {
+                    knownSpecies.Add(saveDefs[i], raceLists[i]);
+                }
+            }
         }
     }
 

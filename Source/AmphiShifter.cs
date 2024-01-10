@@ -11,15 +11,16 @@ namespace Rimimorpho
 {
     public class AmphiShifterProps : CompProperties
     {
-        public AmphiShifterProps() { 
+        public AmphiShifterProps() 
+        { 
             this.compClass=typeof(AmphiShifter);
         }
     }
     public class AmphiShifter : ShapeshifterComp
     {
         private bool shifted = false;
-        
-        public Dictionary<ThingDef,RaceList<StoredRace>> knownSpecies = new Dictionary<ThingDef, RaceList<StoredRace>>();
+
+        public Dictionary<ThingDef, RaceList<StoredRace>> knownSpecies = new Dictionary<ThingDef, RaceList<StoredRace>>();
 
         public void LearnSpecies(Pawn pawn)
         {
@@ -105,10 +106,7 @@ namespace Rimimorpho
             {
                 defaultLabel = "Rimimorpho_OpenTransformationWindow".Translate(),
                 icon = AmphiDefs.RimMorpho_Amphimorpho.uiIcon,
-                action = delegate ()
-                {
-                    Find.WindowStack.Add(new Ivy_TransformationWindow(pawn));
-                }
+                action = () => Find.WindowStack.Add(new TransformationSelectionWindow(pawn))
             };
             yield return command;
             yield return revert;

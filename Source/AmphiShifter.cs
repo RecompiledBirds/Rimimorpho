@@ -165,10 +165,7 @@ namespace Rimimorpho
         {
             Scribe_Values.Look(ref ticksDownedFor, nameof(ticksDownedFor));
             Scribe_Values.Look(ref shifted, nameof(shifted));
-            Scribe_Collections.Look(ref knownSpecies, nameof(knownSpecies),LookMode.Deep,LookMode.Deep);
-
+            Scribe_Collections.Look(ref knownSpecies, nameof(knownSpecies), LookMode.Def, LookMode.Deep);
         }
     }
-
- 
 }

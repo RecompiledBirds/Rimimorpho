@@ -10,7 +10,7 @@ using Verse.AI;
 
 namespace Rimimorpho
 {
-    public class TouchPawn :JobDriver
+    public class TouchPawn : JobDriver
     {
         private static readonly Random random = new Random();
 

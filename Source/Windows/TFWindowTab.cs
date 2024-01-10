@@ -12,5 +12,7 @@ namespace Rimimorpho
     {
         public abstract void Draw(Rect inRect, Pawn pawn, AmphiShifter shifter);
         public abstract string Name { get; }
+
+        public abstract int TabIndex { get; }
     }
 }

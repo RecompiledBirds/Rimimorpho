@@ -13,6 +13,9 @@ namespace Rimimorpho
         public Rect viewRect;
         private Vector2 scrollPos;
         public override string Name => "Race";
+
+        public override int TabIndex => 0;
+
         const float boxHeight=60;
         int size = 0;
         public override void Draw(Rect inRect, Pawn pawn, AmphiShifter shifter)
@@ -51,8 +54,10 @@ namespace Rimimorpho
                     {
                         Texture2D icon = tex;
                         if (race.XenotypeDef != null&&race.XenotypeDef.Icon!=null) icon = race.XenotypeDef.Icon;
-                        Widgets.DrawTextureFitted(new Rect(new Vector2(textureX,lengthEval), new Vector2(boxHeight, boxHeight)), icon, 1);
-                       
+                        Rect iconRect = new Rect(new Vector2(textureX, lengthEval), new Vector2(boxHeight, boxHeight));
+                        Widgets.DrawTextureFitted(iconRect, icon, 1);
+                        Widgets.DrawMenuSection(iconRect);
+
                     }
                     Widgets.Label(new Rect(new Vector2(xPos+40, lengthEval), new Vector2(widthEval - boxHeight, boxHeight)), (race.XenotypeDef != null ? race.XenotypeDef.defName : race.ThingDef.defName));
                     

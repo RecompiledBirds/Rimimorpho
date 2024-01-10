@@ -33,6 +33,7 @@ namespace Rimimorpho
 
         private readonly Color originalColor;
         private readonly GameFont originalFont;
+        private readonly TextAnchor originalAnchor;
         
         private Rect scrollAreaRect = new Rect(windowMargin.x, windowMargin.y + topBarRect.height + margin, windowMargin.width, windowMargin.height - margin - topBarRect.height);
         private Rect scrollAreaInnerRect = new Rect();
@@ -46,11 +47,11 @@ namespace Rimimorpho
         public TransformationSelectionWindow(Pawn pawn) 
         {
             this.pawn = pawn;
-            Log.Message("TexButton.Collapse height: " + TexButton.Collapse.height.ToString());
             onlyOneOfTypeAllowed = true;
 
             originalFont = Text.Font;
             originalColor = GUI.color;
+            originalAnchor = Text.Anchor;
 
             pawnAmphiShifter = pawn.TryGetComp<AmphiShifter>();
             storedPawnRaces = pawnAmphiShifter?.knownSpecies;
@@ -63,20 +64,21 @@ namespace Rimimorpho
 
         protected override float Margin => 0f;
 
-        private void ResetFontAndColor()
+        private void ResetTextAndColor()
         {
+            Text.Anchor = originalAnchor;
             Text.Font = originalFont;
             GUI.color = originalColor;
         }
 
-        //TODO: Translations strings
         public override void DoWindowContents(Rect _)
         {
             Text.Font = GameFont.Medium;
-            Widgets.Label(titleRect, $"Select Transformation:");
+            Widgets.Label(titleRect, $"Select Transformation:"); //TODO: Translation string
             Widgets.BeginScrollView(scrollAreaRect, ref scrollHeight, scrollAreaInnerRect);
             Widgets.BeginGroup(scrollAreaRect);
-            
+
+            int curHeight = 0;
             float yOffset = 0f;
             for (int i = 0; i < storedThingDefs.Count; i++)
             {
@@ -86,8 +88,17 @@ namespace Rimimorpho
                 Rect expandImageRect = new Rect(descLabelRect) { x = margin + tmpBttnRect.height, width = descLabelRect.height };
                 ThingDef currentThingDef = storedThingDefs[i];
 
+                if (curHeight % 2 == 0)
+                {
+                    Widgets.DrawHighlight(tmpBttnRect);
+                }
+                else
+                {
+                    Widgets.DrawLightHighlight(tmpBttnRect);
+                }
+
                 Widgets.DrawHighlightIfMouseover(tmpBttnRect);
-                Widgets.DrawTextHighlight(descLabelRect);
+                Widgets.DrawLineHorizontal(0f, tmpBttnRect.yMax, tmpBttnRect.width);
 
                 Widgets.DefIcon(tmpBttnRect.LeftPartPixels(tmpBttnRect.height), currentThingDef);
                 Text.Font = GameFont.Tiny;
@@ -108,6 +119,7 @@ namespace Rimimorpho
                         SoundDefOf.TabOpen.PlayOneShotOnCamera();
                     }
                 }
+                curHeight++;
 
                 if (thisIsSelectedRace)
                 {
@@ -115,13 +127,36 @@ namespace Rimimorpho
                     {
                         yOffset += bttnHeight;
                         Rect tmpSubBttnRect = GetTmpBttnRect(i, 45f);
-                        Widgets.DrawBox(tmpSubBttnRect);
+                        StoredRace race = storedPawnRaces[currentThingDef][j];
+                        
+                        if (curHeight % 2 == 0)
+                        {
+                            Widgets.DrawHighlight(tmpSubBttnRect);
+                        }
+                        else
+                        {
+                            Widgets.DrawLightHighlight(tmpSubBttnRect);
+                        }
+
+                        Text.Anchor = TextAnchor.MiddleCenter;
+                        Text.Font = GameFont.Medium;
+                        if (race.XenotypeDef is XenotypeDef def)
+                        {
+                            Widgets.Label(tmpSubBttnRect, $"{def.LabelCap}");
+                        }
+                        else
+                        {
+                            Widgets.Label(tmpSubBttnRect, $"No Xenotype"); //TODO: Translationstring
+                        }
+                        curHeight++;
                     }
+                    ResetTextAndColor();
                 }
             }
+
             Widgets.EndGroup();
             Widgets.EndScrollView();
-            ResetFontAndColor();
+            ResetTextAndColor();
             if (Widgets.CloseButtonFor(closBttnRect)) Close();
 
             Rect GetTmpBttnRect(int i, float xOffset = 0f)

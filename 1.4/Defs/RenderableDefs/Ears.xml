@@ -19,6 +19,8 @@
 				<texPath>Amphimorpho/BaseTexture/EarLeft/EarLeft</texPath>
 				<alternateMaskPaths>
 					<li>Amphimorpho/Variant_1/EarLeft/EarLeft</li>
+					<li>Amphimorpho/Variant_2/EarLeft/EarLeft</li>
+					<li>Amphimorpho/Variant_3/EarLeft/EarLeft</li>
 				</alternateMaskPaths>
 			</li>
 		</textures>
@@ -47,6 +49,8 @@
 				<texPath>Amphimorpho/BaseTexture/EarRight/EarRight</texPath>
 				<alternateMaskPaths>
 					<li>Amphimorpho/Variant_1/EarRight/EarRight</li>
+					<li>Amphimorpho/Variant_2/EarRight/EarRight</li>
+					<li>Amphimorpho/Variant_3/EarRight/EarRight</li>
 				</alternateMaskPaths>
 			</li>
 		</textures>

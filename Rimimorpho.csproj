@@ -17,7 +17,8 @@
 
 	<ItemGroup>
 		<Folder Include="1.4\Assemblies\" />
-		<Folder Include="Textures\" />
+		<Folder Include="Textures\Amphimorpho\Variant_3\" />
+		<Folder Include="Textures\Amphimorpho\Variant_2\" />
 	</ItemGroup>
 
 	<ItemGroup>

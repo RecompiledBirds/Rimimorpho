@@ -9,22 +9,34 @@ using Verse.AI;
 using Verse;
 using System.Data.Odbc;
 using RimWorld;
+using System.Security.Cryptography;
 
 namespace Rimimorpho
 {
-    public class TransformJob : JobDriver
+    public class TransformTargetJob : JobDriver
     {
-        private ThingDef morphDef;
+        private static StoredRace nextRaceTarget;
+        private static XenotypeDef nextXenoTarget;
+
         private float workLeft = -1000f;
         private float workOriginal = -1000f;
 
         private double energyConsumed;
         private double energy;
-     
-        public override bool TryMakePreToilReservations(bool errorOnFailed)
-        {
-            return pawn.Reserve(job.targetA, job, 1, -1, null, errorOnFailed);
+
+        public static StoredRace NextRaceTarget 
+        { 
+            get => nextRaceTarget; 
+            set => nextRaceTarget = value; 
         }
+
+        public static XenotypeDef NextXenoTarget 
+        { 
+            get => nextXenoTarget; 
+            set => nextXenoTarget = value; 
+        }
+
+        public override bool TryMakePreToilReservations(bool errorOnFailed) => true;
 
         public override void ExposeData()
         {
@@ -33,7 +45,9 @@ namespace Rimimorpho
             Scribe_Values.Look(ref workLeft, nameof(workLeft));
             Scribe_Values.Look(ref workOriginal, nameof(workOriginal));
             Scribe_Values.Look(ref energyConsumed, nameof(energyConsumed));
-            Scribe_Defs.Look(ref morphDef, nameof(morphDef));
+
+            Scribe_Defs.Look(ref nextXenoTarget, nameof(nextXenoTarget));
+            Scribe_References.Look(ref nextRaceTarget, nameof(nextRaceTarget));
         }
 
         //TODO: Translation strings
@@ -48,11 +62,11 @@ namespace Rimimorpho
             Toil doWork = ToilMaker.MakeToil("MakeNewToils");
             doWork.initAction = () =>
             {
-                morphDef = DefDatabase<ThingDef>.AllDefs.Where(x => x.race != null).RandomElement();
-                ShiftUtils.GetTransformData(doWork.actor, doWork.actor.TryGetComp<AmphiShifter>(), morphDef, out workLeft, out energy);
+                ShiftUtils.GetTransformData(doWork.actor, doWork.actor.TryGetComp<AmphiShifter>(), NextRaceTarget.ThingDef, out workLeft, out energy);
                 workOriginal = workLeft;
                 Log.Message($"workLeft: {workLeft}");
             };
+
             doWork.tickAction = () =>
             {
                 float adjustedSkillVal = doWork.actor.GetStatValue(AmphiDefs.RimMorpho_TransformationStat) * 1.7f;
@@ -66,9 +80,16 @@ namespace Rimimorpho
                 doWork.actor.skills?.Learn(AmphiDefs.RimMorpho_Shifting, 1f, false);
                 if (workLeft <= 0f) ReadyForNextToil();
             };
+
             doWork.AddFinishAction(() =>
             {
-                doWork.actor.TryGetComp<AmphiShifter>().SetForm(morphDef);
+                if (NextXenoTarget == null)
+                {
+                    doWork.actor.TryGetComp<AmphiShifter>().SetForm(NextRaceTarget.ThingDef);
+                    return;
+                }
+
+                doWork.actor.TryGetComp<AmphiShifter>().SetForm(NextRaceTarget.ThingDef, NextXenoTarget);
             });
 
             //yield return gotoToil;

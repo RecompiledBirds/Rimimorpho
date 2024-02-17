@@ -14,7 +14,7 @@ namespace Rimimorpho
         public static ThingDef RimMorpho_Amphimorpho;
         public static JobDef RimMorpho_TouchPawn;
         public static JobDef RimMorpho_RevertForm;
-        public static JobDef RimMorpho_TransformRandom;
+        public static JobDef RimMorpho_TransformTarget;
         public static ThingDef RimMorpho_AmphimorphoGoo;
         public static HediffDef RimMorpho_AmphimorphoGooInfection;
         public static SkillDef RimMorpho_Shifting;

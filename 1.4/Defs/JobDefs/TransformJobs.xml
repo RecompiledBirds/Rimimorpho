@@ -17,8 +17,8 @@
 	</JobDef>
 
 	<JobDef>
-		<defName>RimMorpho_TransformRandom</defName>
-		<driverClass>Rimimorpho.TransformJob</driverClass>
+		<defName>RimMorpho_TransformTarget</defName>
+		<driverClass>Rimimorpho.TransformTargetJob</driverClass>
 		<reportString>Transforming.</reportString>
 		<casualInterruptible>false</casualInterruptible>
 		<allowOpportunisticPrefix>true</allowOpportunisticPrefix>

@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
+using Verse.AI;
 using Verse.Sound;
 
 namespace Rimimorpho
@@ -17,7 +18,7 @@ namespace Rimimorpho
         private const float bttnHeight = 45f;
         private const float bttnDescHeight = 18f;
         private const float margin = 5f;
-
+        private const float subButtonXOffset = 45f;
         private static readonly Vector2 initSize = new Vector2(800, 440);
 
         private static readonly Rect window = new Rect(new Vector2(), initSize);
@@ -87,15 +88,8 @@ namespace Rimimorpho
                 Rect descLabelRect = new Rect(margin * 2f + tmpBttnRect.height + bttnDescHeight, tmpBttnRect.yMax - bttnDescHeight, tmpBttnRect.width, bttnDescHeight);
                 Rect expandImageRect = new Rect(descLabelRect) { x = margin + tmpBttnRect.height, width = descLabelRect.height };
                 ThingDef currentThingDef = storedThingDefs[i];
-
-                if (curHeight % 2 == 0)
-                {
-                    Widgets.DrawHighlight(tmpBttnRect);
-                }
-                else
-                {
-                    Widgets.DrawLightHighlight(tmpBttnRect);
-                }
+                
+                HighlightUtil.DrawHighlights(curHeight, tmpBttnRect);
 
                 Widgets.DrawHighlightIfMouseover(tmpBttnRect);
                 Widgets.DrawLineHorizontal(0f, tmpBttnRect.yMax, tmpBttnRect.width);
@@ -126,28 +120,30 @@ namespace Rimimorpho
                     for (int j = 0; j < storedPawnRaces[currentThingDef].Length; j++)
                     {
                         yOffset += bttnHeight;
-                        Rect tmpSubBttnRect = GetTmpBttnRect(i, 45f);
+                        Rect tmpSubBttnRect = GetTmpBttnRect(i, subButtonXOffset);
                         StoredRace race = storedPawnRaces[currentThingDef][j];
-                        
-                        if (curHeight % 2 == 0)
-                        {
-                            Widgets.DrawHighlight(tmpSubBttnRect);
-                        }
-                        else
-                        {
-                            Widgets.DrawLightHighlight(tmpSubBttnRect);
-                        }
+
+                        HighlightUtil.DrawHighlights(curHeight, tmpSubBttnRect);
 
                         Text.Anchor = TextAnchor.MiddleCenter;
                         Text.Font = GameFont.Medium;
                         if (race.XenotypeDef is XenotypeDef def)
                         {
                             Widgets.Label(tmpSubBttnRect, $"{def.LabelCap}");
+                            if (Widgets.ButtonInvisible(tmpSubBttnRect))
+                            {
+                                MakePawnTransformInto(race, def);
+                            }
                         }
                         else
                         {
                             Widgets.Label(tmpSubBttnRect, $"No Xenotype"); //TODO: Translationstring
+                            if (Widgets.ButtonInvisible(tmpSubBttnRect))
+                            {
+                                MakePawnTransformInto(race);
+                            }
                         }
+
                         curHeight++;
                     }
                     ResetTextAndColor();
@@ -163,6 +159,14 @@ namespace Rimimorpho
             {
                 return new Rect(xOffset, (bttnHeight + margin) * i + yOffset, BaseSpeciesBttnSize.x - xOffset, BaseSpeciesBttnSize.y);
             }
+        }
+
+        private void MakePawnTransformInto(StoredRace race, XenotypeDef xenotype = null)
+        {
+            TransformTargetJob.NextRaceTarget = race;
+            TransformTargetJob.NextXenoTarget = xenotype;
+
+            pawn.jobs.TryTakeOrderedJob(JobMaker.MakeJob(AmphiDefs.RimMorpho_TransformTarget));
         }
     }
 }

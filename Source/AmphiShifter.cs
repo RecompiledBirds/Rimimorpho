@@ -128,11 +128,9 @@ namespace Rimimorpho
             }
         }
 
-        public override void SetForm(Pawn pawn)
+        public override void SetForm(Pawn pawn, XenotypeDef xenotypeDef = null)
         {
-            base.SetForm(pawn);
-
-            
+            base.SetForm(pawn, xenotypeDef);
         }
 
         public override void SetForm(ThingDef def)

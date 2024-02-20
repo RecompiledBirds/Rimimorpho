@@ -15,26 +15,22 @@ namespace Rimimorpho
 {
     public class TransformTargetJob : JobDriver
     {
-        private static StoredRace nextRaceTarget;
-        private static XenotypeDef nextXenoTarget;
+        private const float DifficultyModifier = 0.25f;
+
+        private AmphiShifter amphiShifter;
+        private TransformData transformData;
 
         private float workLeft = -1000f;
-        private float workOriginal = -1000f;
 
         private double energyConsumed;
         private double energy;
 
-        public static StoredRace NextRaceTarget 
-        { 
-            get => nextRaceTarget; 
-            set => nextRaceTarget = value; 
-        }
+        private TransformData TransformData => transformData;
 
-        public static XenotypeDef NextXenoTarget 
-        { 
-            get => nextXenoTarget; 
-            set => nextXenoTarget = value; 
-        }
+        private AmphiShifter ShifterComp => amphiShifter ?? (amphiShifter = pawn.TryGetComp<AmphiShifter>());
+
+        public static StoredRace NextRaceTarget { get; internal set; }
+        public static XenotypeDef NextXenoTarget { get; internal set; }
 
         public override bool TryMakePreToilReservations(bool errorOnFailed) => true;
 
@@ -43,12 +39,10 @@ namespace Rimimorpho
             base.ExposeData();
             Scribe_Values.Look(ref energy, nameof(energy));
             Scribe_Values.Look(ref workLeft, nameof(workLeft));
-            Scribe_Values.Look(ref workOriginal, nameof(workOriginal));
             Scribe_Values.Look(ref energyConsumed, nameof(energyConsumed));
 
-            Scribe_Defs.Look(ref nextXenoTarget, nameof(nextXenoTarget));
-            Scribe_References.Look(ref nextRaceTarget, nameof(nextRaceTarget));
-        }
+            Scribe_Deep.Look(ref transformData, nameof(transformData));
+        } 
 
         //TODO: Translation strings
         public override string GetReport()
@@ -58,42 +52,55 @@ namespace Rimimorpho
 
         protected override IEnumerable<Toil> MakeNewToils()
         {
-            //Toil gotoToil = Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.OnCell);
-            Toil doWork = ToilMaker.MakeToil("MakeNewToils");
-            doWork.initAction = () =>
+            Toil stopDead = Toils_Goto.GotoCell(pawn.Position, PathEndMode.OnCell);
+            Toil transform = ToilMaker.MakeToil("TransformToil");
+            transform.activeSkill = () => AmphiDefs.RimMorpho_Shifting;
+            transform.socialMode = RandomSocialMode.SuperActive;
+            transform.defaultCompleteMode = ToilCompleteMode.Never;
+            transform.WithProgressBar(TargetIndex.B, () => 1f - workLeft / TransformData.CalculatedWorkTicks);
+
+            transform.initAction = () =>
             {
-                ShiftUtils.GetTransformData(doWork.actor, doWork.actor.TryGetComp<AmphiShifter>(), NextRaceTarget.ThingDef, out workLeft, out energy);
-                workOriginal = workLeft;
-                Log.Message($"workLeft: {workLeft}");
+                transformData = ShiftUtils.GetTransformData(pawn, ShifterComp, NextRaceTarget.ThingDef, NextXenoTarget);
+                workLeft = TransformData.CalculatedWorkTicks;
+                RVCLog.Log($"Workamount: {workLeft}, " +
+                    $"current food level: {pawn.needs.food.CurLevel}, " +
+                    $"predicted food level: {pawn.needs.food.CurLevel - energy / 2f}, " +
+                    $"predicted tick duration: {workLeft / pawn.GetStatValue(AmphiDefs.RimMorpho_TransformationStat)}, " +
+                    $"processed speed: {pawn.GetStatValue(AmphiDefs.RimMorpho_TransformationStat)}", debugOnly: true);
             };
 
-            doWork.tickAction = () =>
+            transform.tickAction = () =>
             {
-                float adjustedSkillVal = doWork.actor.GetStatValue(AmphiDefs.RimMorpho_TransformationStat) * 1.7f;
+                float adjustedSkillVal = pawn.GetStatValue(AmphiDefs.RimMorpho_TransformationStat) * 1.7f;
                 workLeft -= adjustedSkillVal;
 
-                float energyConsumed = (float)(workLeft / workOriginal * energy);
-                pawn.needs.food.CurLevel -= energyConsumed / 2f;
-                pawn.needs.rest.CurLevel -= energyConsumed / 2f;
+                float energyConsumedThisTick = adjustedSkillVal / TransformData.CalculatedWorkTicks * (float) energy;
+                pawn.needs.food.CurLevel -= energyConsumedThisTick / 2f;
+                pawn.needs.rest.CurLevel -= energyConsumedThisTick / 2f;
 
-                Log.Message($"workLeft: {workLeft}, adjustedSkillVal: {adjustedSkillVal}, energyConsumed: {energyConsumed}");
-                doWork.actor.skills?.Learn(AmphiDefs.RimMorpho_Shifting, 1f, false);
+                RVCLog.Log($"workLeft: {workLeft}, adjustedSkillVal: {adjustedSkillVal}, energyConsumed: {energyConsumedThisTick}", debugOnly: true);
+                pawn.skills?.Learn(AmphiDefs.RimMorpho_Shifting, 1f, false);
                 if (workLeft <= 0f) ReadyForNextToil();
             };
 
-            doWork.AddFinishAction(() =>
+            transform.AddFinishAction(() =>
             {
-                if (NextXenoTarget == null)
+                if (workLeft > 0f) return;
+
+                if (TransformData.TargetXenoDef == null)
                 {
-                    doWork.actor.TryGetComp<AmphiShifter>().SetForm(NextRaceTarget.ThingDef);
+                    pawn.TryGetComp<AmphiShifter>().SetForm(TransformData.TargetRace);
                     return;
                 }
 
-                doWork.actor.TryGetComp<AmphiShifter>().SetForm(NextRaceTarget.ThingDef, NextXenoTarget);
+                pawn.TryGetComp<AmphiShifter>().SetForm(TransformData.TargetRace, TransformData.TargetXenoDef);
             });
 
-            //yield return gotoToil;
-            yield return doWork;
+            AddFailCondition(() => !ShifterComp.CanPawnShift(DifficultyModifier));
+
+            yield return stopDead;
+            yield return transform;
         }
     }
 }

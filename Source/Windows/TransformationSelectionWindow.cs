@@ -127,21 +127,11 @@ namespace Rimimorpho
 
                         Text.Anchor = TextAnchor.MiddleCenter;
                         Text.Font = GameFont.Medium;
-                        if (race.XenotypeDef is XenotypeDef def)
+                        XenotypeDef def = race.XenotypeDef;
+                        Widgets.Label(tmpSubBttnRect, $"Transform into {GetTFLabel(currentThingDef, def)}");  //TODO: Translationstring
+                        if (Widgets.ButtonInvisible(tmpSubBttnRect))
                         {
-                            Widgets.Label(tmpSubBttnRect, $"{def.LabelCap}");
-                            if (Widgets.ButtonInvisible(tmpSubBttnRect))
-                            {
-                                MakePawnTransformInto(race, def);
-                            }
-                        }
-                        else
-                        {
-                            Widgets.Label(tmpSubBttnRect, $"No Xenotype"); //TODO: Translationstring
-                            if (Widgets.ButtonInvisible(tmpSubBttnRect))
-                            {
-                                MakePawnTransformInto(race);
-                            }
+                            MakePawnTransformInto(race, def);
                         }
 
                         curHeight++;
@@ -161,12 +151,19 @@ namespace Rimimorpho
             }
         }
 
+        private string GetTFLabel(ThingDef thingDef, XenotypeDef xenoDef = null)
+        {
+            if (xenoDef == null) return thingDef.LabelCap;
+            return $"{xenoDef.LabelCap} {thingDef.LabelCap}";
+        }
+
         private void MakePawnTransformInto(StoredRace race, XenotypeDef xenotype = null)
         {
             TransformTargetJob.NextRaceTarget = race;
             TransformTargetJob.NextXenoTarget = xenotype;
 
             pawn.jobs.TryTakeOrderedJob(JobMaker.MakeJob(AmphiDefs.RimMorpho_TransformTarget));
+            Close();
         }
     }
 }

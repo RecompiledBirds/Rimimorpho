@@ -103,18 +103,19 @@ namespace Rimimorpho
             return ShiftDifficulty(pawn,shapeshifterComp,target.def,target.genes.Xenotype);
         }
 
-        public static void GetTransformData(Pawn pawn, ShapeshifterComp shapeshifterComp, ThingDef targetDef, out float workTicks, out double energyUsed, XenotypeDef other = null)
+        public static TransformData GetTransformData(Pawn pawn, ShapeshifterComp shapeshifterComp, ThingDef targetDef, XenotypeDef other = null)
         {
             int difficulty = ShiftDifficulty(pawn, shapeshifterComp, targetDef, other);
             double x= DifficultyToEnergyXVal(difficulty);
-            energyUsed = DifficultyToEnergy(difficulty,x);
-            workTicks = TicksForTransform(difficulty, energyUsed, x);
+            double energyUsed = DifficultyToEnergy(difficulty,x);
+            float workTicks = TicksForTransform(difficulty, energyUsed, x);
 
+            return new TransformData(targetDef, other, workTicks, energyUsed);
         }
 
-        public static void GetTransformData(Pawn pawn, ShapeshifterComp shapeshifterComp, Pawn target, out float workTicks, out double energyUsed)
+        public static TransformData GetTransformData(Pawn pawn, ShapeshifterComp shapeshifterComp, Pawn target)
         {
-            GetTransformData(pawn, shapeshifterComp, target.def, out workTicks, out energyUsed,target.genes?.Xenotype);
+            return GetTransformData(pawn, shapeshifterComp, target.def, target.genes?.Xenotype);
         }
 
         /// <summary>

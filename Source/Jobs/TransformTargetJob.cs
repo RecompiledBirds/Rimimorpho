@@ -25,7 +25,7 @@ namespace Rimimorpho
         private double energyConsumed;
         private double energy;
 
-        private TransformData TransformData => transformData;
+        public TransformData TransformData => transformData;
 
         private AmphiShifter ShifterComp => amphiShifter ?? (amphiShifter = pawn.TryGetComp<AmphiShifter>());
 
@@ -62,30 +62,35 @@ namespace Rimimorpho
             transform.initAction = () =>
             {
                 transformData = ShiftUtils.GetTransformData(pawn, ShifterComp, NextRaceTarget.ThingDef, NextXenoTarget);
+                transformData.Active = true;
+
+                energy = TransformData.CalculatedEnergyUsed;
                 workLeft = TransformData.CalculatedWorkTicks;
                 RVCLog.Log($"Workamount: {workLeft}, " +
                     $"current food level: {pawn.needs.food.CurLevel}, " +
-                    $"predicted food level: {pawn.needs.food.CurLevel - energy / 2f}, " +
+                    $"predicted food level: {TransformData.PredictedTotalFoodUse}, " +
+                    $"current rest level: {pawn.needs.rest.CurLevel}, " +
+                    $"predicted rest level: {TransformData.PredictedTotalRestUse}, " +
                     $"predicted tick duration: {workLeft / pawn.GetStatValue(AmphiDefs.RimMorpho_TransformationStat)}, " +
                     $"processed speed: {pawn.GetStatValue(AmphiDefs.RimMorpho_TransformationStat)}", debugOnly: true);
             };
 
             transform.tickAction = () =>
             {
-                float adjustedSkillVal = pawn.GetStatValue(AmphiDefs.RimMorpho_TransformationStat) * 1.7f;
-                workLeft -= adjustedSkillVal;
+                workLeft -= TransformData.SkillStatVal;
 
-                float energyConsumedThisTick = adjustedSkillVal / TransformData.CalculatedWorkTicks * (float) energy;
+                float energyConsumedThisTick = TransformData.SkillStatVal / TransformData.CalculatedWorkTicks * (float) energy;
                 pawn.needs.food.CurLevel -= energyConsumedThisTick / 2f;
                 pawn.needs.rest.CurLevel -= energyConsumedThisTick / 2f;
 
-                RVCLog.Log($"workLeft: {workLeft}, adjustedSkillVal: {adjustedSkillVal}, energyConsumed: {energyConsumedThisTick}", debugOnly: true);
+                /*if (Convert.ToInt32(workLeft) % 100 == 0)*/ RVCLog.Log($"workLeft: {workLeft}, adjustedSkillVal: {TransformData.SkillStatVal}, energyConsumed: {energyConsumedThisTick}, predicted food/rest: {TransformData.PredictedFoodUse(Convert.ToInt32(workLeft))}/{TransformData.PredictedRestUse(Convert.ToInt32(workLeft))}, current food/rest: {pawn.needs.food.CurLevel}/{pawn.needs.rest.CurLevel}", debugOnly: true);
                 pawn.skills?.Learn(AmphiDefs.RimMorpho_Shifting, 1f, false);
                 if (workLeft <= 0f) ReadyForNextToil();
             };
 
             transform.AddFinishAction(() =>
             {
+                transformData.Active = false;
                 if (workLeft > 0f) return;
 
                 if (TransformData.TargetXenoDef == null)
@@ -97,7 +102,7 @@ namespace Rimimorpho
                 pawn.TryGetComp<AmphiShifter>().SetForm(TransformData.TargetRace, TransformData.TargetXenoDef);
             });
 
-            AddFailCondition(() => !ShifterComp.CanPawnShift(DifficultyModifier));
+            AddFailCondition(() => TransformData?.HasEnoughFoodLeft(workLeft) == false || TransformData?.HasEnoughRestLeft(workLeft) == false);
 
             yield return stopDead;
             yield return transform;

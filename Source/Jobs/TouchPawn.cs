@@ -13,8 +13,8 @@ namespace Rimimorpho
     public class TouchPawn : JobDriver
     {
         private static readonly Random random = new Random();
+        private TransformData transformData;
 
-        private ThingDef morphDef;
         private float workLeft = -1000f;
         private float workOriginal = -1000f;
 
@@ -28,7 +28,7 @@ namespace Rimimorpho
             base.ExposeData();
             Scribe_Values.Look(ref workLeft, nameof(workLeft));
             Scribe_Values.Look(ref workOriginal, nameof(workOriginal));
-            Scribe_Defs.Look(ref morphDef, nameof(morphDef));
+            Scribe_Deep.Look(ref transformData, nameof(transformData));
         }
 
         public override string GetReport()
@@ -51,10 +51,12 @@ namespace Rimimorpho
 
             getAndMakeData.initAction = () =>
             {
-                ShiftUtils.GetTransformData(learningSpecies.actor, pawn.TryGetComp<AmphiShifter>(), TargetA.Pawn.def, out workLeft, out _);
-                //The pawn isnt actually shifting, so we can make this task a bit easier.
-                workLeft /= 3;
-                workOriginal = workLeft;
+                transformData = ShiftUtils.GetTransformData(learningSpecies.actor, pawn.TryGetComp<AmphiShifter>(), TargetA.Pawn.def, difficultyScale: 0.3333f);
+                transformData.Active = true;
+
+                workLeft = transformData.CalculatedWorkTicks;
+                workOriginal = transformData.CalculatedWorkTicks;
+
                 RVCLog.Log($"Workamount: {workLeft}, " +
                     $"current food level: {pawn.needs.food.CurLevel}, " +
                     //$"predicted food level: {learningSpecies.actor.needs.food.CurLevel - energy / 2f}, " +

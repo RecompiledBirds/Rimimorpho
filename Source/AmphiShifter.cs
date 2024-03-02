@@ -157,13 +157,6 @@ namespace Rimimorpho
             base.CompTick();
         }
 
-        public bool CanPawnShift(float difficultyModifier = 1f)
-        {
-
-
-            return true;
-        }
-
         public override void PostExposeData()
         {
             Scribe_Values.Look(ref ticksDownedFor, nameof(ticksDownedFor));

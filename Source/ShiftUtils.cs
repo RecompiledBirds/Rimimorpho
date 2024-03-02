@@ -103,19 +103,19 @@ namespace Rimimorpho
             return ShiftDifficulty(pawn,shapeshifterComp,target.def,target.genes.Xenotype);
         }
 
-        public static TransformData GetTransformData(Pawn pawn, ShapeshifterComp shapeshifterComp, ThingDef targetDef, XenotypeDef other = null)
+        public static TransformData GetTransformData(Pawn pawn, ShapeshifterComp shapeshifterComp, ThingDef targetDef, XenotypeDef other = null, float difficultyScale = 1f)
         {
-            int difficulty = ShiftDifficulty(pawn, shapeshifterComp, targetDef, other);
-            double x= DifficultyToEnergyXVal(difficulty);
-            double energyUsed = DifficultyToEnergy(difficulty,x);
-            float workTicks = TicksForTransform(difficulty, energyUsed, x);
+            float difficulty = ShiftDifficulty(pawn, shapeshifterComp, targetDef, other) * difficultyScale;
+            double x = DifficultyToEnergyXVal(difficulty);
+            double energyUsed = DifficultyToEnergy(difficulty, x);
+            int workTicks = TicksForTransform(difficulty, energyUsed, x);
 
-            return new TransformData(targetDef, other, workTicks, energyUsed);
+            return new TransformData(pawn, targetDef, other, workTicks, energyUsed);
         }
 
-        public static TransformData GetTransformData(Pawn pawn, ShapeshifterComp shapeshifterComp, Pawn target)
+        public static TransformData GetTransformData(Pawn pawn, ShapeshifterComp shapeshifterComp, Pawn target, float difficultyScale = 1f)
         {
-            return GetTransformData(pawn, shapeshifterComp, target.def, target.genes?.Xenotype);
+            return GetTransformData(pawn, shapeshifterComp, target.def, target.genes?.Xenotype, difficultyScale);
         }
 
         /// <summary>
@@ -140,10 +140,10 @@ namespace Rimimorpho
             return Math.Min((Math.Log(energyX) * 0.301) / 2, 2);
         }
 
-        public static float TicksForTransform(float difficulty, double energy, double energyX)
+        public static int TicksForTransform(float difficulty, double energy, double energyX)
         {
             //t(x)=10((d(x)/4)^2k(x))+60
-            return (float)(10 * Math.Pow(energyX / 4, 2 * energy) + 60);
+            return Convert.ToInt32(10d * Math.Pow(energyX / 4d, 2d * energy) + 60d);
         }
 
     }

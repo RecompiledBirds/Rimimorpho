@@ -48,9 +48,11 @@ namespace Rimimorpho
             this.calculatedEnergyUsed = calculatedEnergyUsed;
         }
 
-        public float PredictedFoodUse(float remainingTicks) => (float)CalculatedEnergyUsed / 2 + pawn.needs.food.FoodFallPerTick * (remainingTicks / SkillStatVal);
+        public float RemainingEnergy(float remainingTicks) => (float)(CalculatedEnergyUsed / 2) * (remainingTicks / CalculatedWorkTicks);
 
-        public float PredictedRestUse(float remainingTicks) => (float)CalculatedEnergyUsed / 2 + pawn.needs.rest.RestFallPerTick * (remainingTicks / SkillStatVal);
+        public float PredictedFoodUse(float remainingTicks) => RemainingEnergy(remainingTicks) + pawn.needs.food.FoodFallPerTick * (remainingTicks / SkillStatVal);
+
+        public float PredictedRestUse(float remainingTicks) => RemainingEnergy(remainingTicks) + pawn.needs.rest.RestFallPerTick * (remainingTicks / SkillStatVal);
 
         public bool HasEnoughFoodLeft(float remainingTicks, bool muteErrors = false)
         {

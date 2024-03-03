@@ -28,7 +28,7 @@ namespace Rimimorpho
             {
                 result+=StatDifferenceBetweenThings(stat.stat,a,b);
             }
-            return result;
+            return result/a.statBases.Count;
         }
 
         public static int StatDifferenceBetweenGenes(StatDef stat, GeneDef a, GeneDef b)

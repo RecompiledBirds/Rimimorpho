@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
+using Verse.AI;
 using Verse.Sound;
 
 namespace Rimimorpho
@@ -17,14 +18,21 @@ namespace Rimimorpho
         private const float bttnHeight = 45f;
         private const float bttnDescHeight = 18f;
         private const float margin = 5f;
-
+        private const float subButtonXOffset = 45f;
+        private const float predictionBarHeight = 28f;
+        private const float barMoveAnimationSpeedMin = 0.01f;
+        private const float barMoveAnimationSpeedMax = 8f;
         private static readonly Vector2 initSize = new Vector2(800, 440);
 
-        private static readonly Rect window = new Rect(new Vector2(), initSize);
-        private static readonly Rect windowMargin = window.ContractedBy(5f);
-        private static readonly Rect topBarRect = new Rect(windowMargin.position, new Vector2(windowMargin.width, 26f));
-        private static readonly Rect titleRect = new Rect(topBarRect.x, topBarRect.y, topBarRect.width - topBarRect.height - 4f, topBarRect.height);
-        private static readonly Rect closBttnRect = new Rect(topBarRect.xMax - topBarRect.height, topBarRect.y, topBarRect.height, topBarRect.height + 1f);
+        private readonly Rect window = new Rect(new Vector2(), initSize);
+        private readonly Rect windowMargin;
+        private readonly Rect titleBar;
+        private readonly Rect title;
+        private readonly Rect closBttn;
+        private readonly Rect scrollAreaRect;
+        private readonly Rect predictionBarArea;
+
+        private readonly Vector2 predictionBarBase;
 
         private readonly Pawn pawn;
         private readonly AmphiShifter pawnAmphiShifter;
@@ -34,11 +42,16 @@ namespace Rimimorpho
         private readonly Color originalColor;
         private readonly GameFont originalFont;
         private readonly TextAnchor originalAnchor;
-        
-        private Rect scrollAreaRect = new Rect(windowMargin.x, windowMargin.y + topBarRect.height + margin, windowMargin.width, windowMargin.height - margin - topBarRect.height);
+
+        private Dictionary<string, float> targetVar = new Dictionary<string, float>();
+        private Dictionary<(ThingDef, XenotypeDef), TransformData> tfDatas = new Dictionary<(ThingDef, XenotypeDef), TransformData>();
+
         private Rect scrollAreaInnerRect = new Rect();
         private Vector2 scrollHeight = new Vector2();
+        private Color curFoodColor = Color.gray;
+        private Color curRestColor = Color.gray;
 
+        private TransformData transformData;
         private int selectedRace = -1;
 
         private Vector2 BaseSpeciesBttnSize => new Vector2(scrollAreaInnerRect.size.x, bttnHeight);
@@ -52,6 +65,17 @@ namespace Rimimorpho
             originalFont = Text.Font;
             originalColor = GUI.color;
             originalAnchor = Text.Anchor;
+
+            windowMargin = window.ContractedBy(5f);
+            Vector2 predictionBarSize = new Vector2(windowMargin.width, predictionBarHeight * 2f + margin);
+
+            titleBar = new Rect(windowMargin.position, new Vector2(windowMargin.width, 26f));
+            title = new Rect(titleBar.x, titleBar.y, titleBar.width - titleBar.height - 4f, titleBar.height);
+            closBttn = new Rect(titleBar.xMax - titleBar.height, titleBar.y, titleBar.height, titleBar.height + 1f);
+            scrollAreaRect = new Rect(windowMargin.x, windowMargin.y + titleBar.height + margin, windowMargin.width, windowMargin.height - margin * 2f - titleBar.height - predictionBarSize.y);
+            predictionBarArea = new Rect(new Vector2(windowMargin.x, scrollAreaRect.yMax + margin), predictionBarSize);
+
+            predictionBarBase = new Vector2(windowMargin.width, predictionBarHeight);
 
             pawnAmphiShifter = pawn.TryGetComp<AmphiShifter>();
             storedPawnRaces = pawnAmphiShifter?.knownSpecies;
@@ -74,7 +98,7 @@ namespace Rimimorpho
         public override void DoWindowContents(Rect _)
         {
             Text.Font = GameFont.Medium;
-            Widgets.Label(titleRect, $"Select Transformation:"); //TODO: Translation string
+            Widgets.Label(title, $"Select Transformation:"); //TODO: Translation string
             Widgets.BeginScrollView(scrollAreaRect, ref scrollHeight, scrollAreaInnerRect);
             Widgets.BeginGroup(scrollAreaRect);
 
@@ -88,14 +112,7 @@ namespace Rimimorpho
                 Rect expandImageRect = new Rect(descLabelRect) { x = margin + tmpBttnRect.height, width = descLabelRect.height };
                 ThingDef currentThingDef = storedThingDefs[i];
 
-                if (curHeight % 2 == 0)
-                {
-                    Widgets.DrawHighlight(tmpBttnRect);
-                }
-                else
-                {
-                    Widgets.DrawLightHighlight(tmpBttnRect);
-                }
+                HighlightUtil.DrawHighlights(curHeight, tmpBttnRect);
 
                 Widgets.DrawHighlightIfMouseover(tmpBttnRect);
                 Widgets.DrawLineHorizontal(0f, tmpBttnRect.yMax, tmpBttnRect.width);
@@ -109,6 +126,7 @@ namespace Rimimorpho
                     if (thisIsSelectedRace)
                     {
                         selectedRace = -1;
+                        transformData = null;
                         scrollAreaInnerRect = scrollAreaRect.GetInnerScrollRect((bttnHeight + margin) * storedPawnRaces.Count);
                         SoundDefOf.TabClose.PlayOneShotOnCamera();
                     }
@@ -126,28 +144,40 @@ namespace Rimimorpho
                     for (int j = 0; j < storedPawnRaces[currentThingDef].Length; j++)
                     {
                         yOffset += bttnHeight;
-                        Rect tmpSubBttnRect = GetTmpBttnRect(i, 45f);
+                        Rect tmpSubBttnRect = GetTmpBttnRect(i, subButtonXOffset);
+
                         StoredRace race = storedPawnRaces[currentThingDef][j];
-                        
-                        if (curHeight % 2 == 0)
-                        {
-                            Widgets.DrawHighlight(tmpSubBttnRect);
-                        }
-                        else
-                        {
-                            Widgets.DrawLightHighlight(tmpSubBttnRect);
-                        }
+
+                        HighlightUtil.DrawHighlights(curHeight, tmpSubBttnRect);
 
                         Text.Anchor = TextAnchor.MiddleCenter;
                         Text.Font = GameFont.Medium;
-                        if (race.XenotypeDef is XenotypeDef def)
+                        XenotypeDef xenoDef = race.XenotypeDef;
+                        Widgets.Label(tmpSubBttnRect, $"Transform into {GetTFLabel(currentThingDef, xenoDef)}");  //TODO: Translationstring
+
+                        if (Mouse.IsOver(tmpSubBttnRect))
                         {
-                            Widgets.Label(tmpSubBttnRect, $"{def.LabelCap}");
+                            if (!tfDatas.TryGetValue((currentThingDef, xenoDef), out transformData))
+                            {
+                                transformData = ShiftUtils.GetTransformData(pawn, pawnAmphiShifter, currentThingDef, xenoDef);
+                                tfDatas.Add((currentThingDef, xenoDef), transformData);
+                            }
+
+                            Widgets.DrawHighlight(tmpSubBttnRect);
                         }
-                        else
+
+                        if (Widgets.ButtonInvisible(tmpSubBttnRect))
                         {
-                            Widgets.Label(tmpSubBttnRect, $"No Xenotype"); //TODO: Translationstring
+                            if (tfDatas[(currentThingDef, xenoDef)].AbleToTransformFullWork)
+                            {
+                                MakePawnTransformInto(race, xenoDef);
+                            }
+                            else
+                            {
+                                Messages.Message($"{pawn.LabelCap} can't transform into {GetTFLabel(currentThingDef, xenoDef)}! Their rest or food level is too low!", MessageTypeDefOf.RejectInput, false);
+                            }
                         }
+
                         curHeight++;
                     }
                     ResetTextAndColor();
@@ -157,12 +187,103 @@ namespace Rimimorpho
             Widgets.EndGroup();
             Widgets.EndScrollView();
             ResetTextAndColor();
-            if (Widgets.CloseButtonFor(closBttnRect)) Close();
+
+            Rect foodPredictionBar = new Rect(predictionBarArea.position, predictionBarBase);
+            Rect sleepPredictionBar = new Rect(foodPredictionBar) { y = foodPredictionBar.yMax + margin };
+
+            Color targetFoodBorderColor = Color.gray;
+            Color targetRestBorderColor = Color.gray;
+
+            float foodRequirement = 0f;
+            float foodOverTimeRequirement = 0f;
+
+            float restRequirement = 0f;
+            float restOverTimeRequirement = 0f;
+
+            if (transformData != null)
+            {
+                foodRequirement = (float)transformData.CalculatedEnergyUsed / 2;
+                foodOverTimeRequirement = transformData.PredictedTotalFoodUse;
+
+                restRequirement = (float)transformData.CalculatedEnergyUsed / 2;
+                restOverTimeRequirement = transformData.PredictedTotalRestUse;
+
+                if (!transformData.HasEnoughFoodLeft(transformData.CalculatedWorkTicks, true)) targetFoodBorderColor = Color.red;
+                if (!transformData.HasEnoughRestLeft(transformData.CalculatedWorkTicks, true)) targetRestBorderColor = Color.red;
+            }
+
+            DrawNeedsBar(foodPredictionBar, targetFoodBorderColor, ref curFoodColor, foodRequirement, foodOverTimeRequirement, pawn.needs.food);
+            DrawNeedsBar(sleepPredictionBar, targetRestBorderColor, ref curRestColor, restRequirement, restOverTimeRequirement, pawn.needs.rest);
+
+            ResetTextAndColor();
+            if (Widgets.CloseButtonFor(closBttn)) Close();
 
             Rect GetTmpBttnRect(int i, float xOffset = 0f)
             {
                 return new Rect(xOffset, (bttnHeight + margin) * i + yOffset, BaseSpeciesBttnSize.x - xOffset, BaseSpeciesBttnSize.y);
             }
+        }
+
+        private void DrawNeedsBar(Rect inRect, Color targetBorderColor, ref Color currentBorderColor, float requirement, float requirementOverTime, Need need)
+        {
+            inRect.SplitVertically(60f, out Rect left, out Rect right);
+
+            currentBorderColor = MoveTowards(targetBorderColor, currentBorderColor);
+
+            if (!targetVar.ContainsKey($"{need.LabelCap}.cur"))
+            {
+                targetVar.Add($"{need.LabelCap}.cur", need.CurLevel);
+                targetVar.Add($"{need.LabelCap}.curReq", Mathf.Max(need.CurLevel - requirement, 0));
+                targetVar.Add($"{need.LabelCap}.curTimeReq", Mathf.Max(need.CurLevel - requirementOverTime, 0));
+            }
+            else
+            {
+                targetVar[$"{need.LabelCap}.cur"] = MoveTowardsFor(targetVar[$"{need.LabelCap}.cur"], need.CurLevel);
+                targetVar[$"{need.LabelCap}.curReq"] = MoveTowardsFor(targetVar[$"{need.LabelCap}.curReq"], need.CurLevel - requirement);
+                targetVar[$"{need.LabelCap}.curTimeReq"] = MoveTowardsFor(targetVar[$"{need.LabelCap}.curTimeReq"], need.CurLevel - requirementOverTime);
+            }
+
+            right.DrawProjectedCurrentBar(currentBorderColor, 2, 2,
+                (1f, Color.black, $"{pawn.LabelShortCap}s maximum {need.LabelCap} level", false),
+                (targetVar[$"{need.LabelCap}.cur"], Color.red, $"How much {need.LabelCap} transforming would cost ({requirement})", true),
+                (targetVar[$"{need.LabelCap}.curReq"], Color.yellow, $"How much {need.LabelCap} {pawn.LabelShortCap} naturally needs during the transformation ({requirementOverTime})", true),
+                (targetVar[$"{need.LabelCap}.curTimeReq"], Color.green, $"How much {need.LabelCap} will be left once transforming is complete ({need.CurLevel - requirement})", false)); //TODO: Translationstring
+
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Widgets.Label(left, $"{need.LabelCap}:");
+        }
+
+        private Color MoveTowards(Color target, Color current, float speed = 1f)
+        {
+            return new Color
+            (
+                Mathf.MoveTowards(current.r, target.r, speed * Time.deltaTime),
+                Mathf.MoveTowards(current.g, target.g, speed * Time.deltaTime),
+                Mathf.MoveTowards(current.b, target.b, speed * Time.deltaTime)
+            );
+        }
+
+        private float MoveTowardsFor(float target, float current)
+        {
+            current = Mathf.Max(current, 0);
+            return Mathf.MoveTowards(target, current, MaxDeltaFor(target, current));
+        }
+
+        private float MaxDeltaFor(float target, float current) => Mathf.Lerp(barMoveAnimationSpeedMin, barMoveAnimationSpeedMax, Mathf.Abs(target - current)) * Time.deltaTime;
+
+        private string GetTFLabel(ThingDef thingDef, XenotypeDef xenoDef = null)
+        {
+            if (xenoDef == null) return thingDef.LabelCap;
+            return $"{xenoDef.LabelCap} {thingDef.LabelCap}";
+        }
+
+        private void MakePawnTransformInto(StoredRace race, XenotypeDef xenotype = null)
+        {
+            TransformTargetJob.NextRaceTarget = race;
+            TransformTargetJob.NextXenoTarget = xenotype;
+
+            pawn.jobs.TryTakeOrderedJob(JobMaker.MakeJob(AmphiDefs.RimMorpho_TransformTarget));
+            Close();
         }
     }
 }

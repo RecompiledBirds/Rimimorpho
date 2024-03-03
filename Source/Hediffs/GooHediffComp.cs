@@ -32,7 +32,7 @@ namespace Rimimorpho
 
                 if(Rand.Chance(severity/100))
                 {
-                    Job job = JobMaker.MakeJob(AmphiDefs.RimMorpho_TransformRandom, parent.pawn);
+                    Job job = JobMaker.MakeJob(AmphiDefs.RimMorpho_TransformTarget, parent.pawn);
                     parent.pawn.jobs.TryTakeOrderedJob(job);
                 }
                 return;

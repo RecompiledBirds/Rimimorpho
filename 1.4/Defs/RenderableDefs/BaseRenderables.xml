@@ -9,6 +9,11 @@
 		<linkTexWith>RimMorpho_Body</linkTexWith>
 	</RVCRestructured.Defs.RenderableDef>
 
+	<RVCRestructured.Defs.RenderableDef ParentName="RimMorpho_BaseAmphiFleshPart" Name="RimMorpho_BaseAmphiHeadPart" Abstract="True">
+		<linkPosWith>RimMorpho_Body</linkPosWith>
+		<linkTexWith>RimMorpho_Head</linkTexWith>
+	</RVCRestructured.Defs.RenderableDef>
+
 	<RVCRestructured.Defs.RenderableDef ParentName="RimMorpho_BaseAmphiBodyPart" Name="RimMorpho_BaseAmphiFacialFeature" Abstract="True">
 		<linkPosWith>RimMorpho_Head</linkPosWith>
 		<north>

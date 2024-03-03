@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Defs>
-	<RVCRestructured.Defs.RenderableDef ParentName="RimMorpho_BaseAmphiBodyPart">
+	<RVCRestructured.Defs.RenderableDef ParentName="RimMorpho_BaseAmphiHeadPart">
 		<defName>RimMorpho_EarLeft</defName>
 		<north>
 			<position>(0,0.05,0)</position>
@@ -26,7 +26,7 @@
 		</textures>
 	</RVCRestructured.Defs.RenderableDef>
 
-	<RVCRestructured.Defs.RenderableDef ParentName="RimMorpho_BaseAmphiBodyPart">
+	<RVCRestructured.Defs.RenderableDef ParentName="RimMorpho_BaseAmphiHeadPart">
 		<defName>RimMorpho_EarRight</defName>
 		<north>
 			<position>(0,0.05,0)</position>

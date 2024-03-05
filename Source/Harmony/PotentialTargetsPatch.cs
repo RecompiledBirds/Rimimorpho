@@ -15,28 +15,33 @@ namespace Rimimorpho
         public static IEnumerable<IAttackTarget> Postfix(IEnumerable<IAttackTarget> values, IAttackTargetSearcher th)
         {
             Pawn pawn = (Pawn)th.Thing;
-            
-            foreach (IAttackTarget target in values) {
+
+            foreach (IAttackTarget target in values)
+            {
                 Thing targThing = target.Thing;
                 AmphiShifter shifter = targThing.TryGetComp<AmphiShifter>();
                 if (shifter == null)
                 {
                     yield return target;
+                    continue;
                 }
 
-                    shifter.CleanupAttackedPawns();
-                if (shifter.CurrentForm.race.Humanlike || shifter.AttackedPawns.ContainsKey(pawn)) { yield return target; }
-                else
+                shifter.CleanupAttackedPawns();
+                RVCLog.MSG($"{shifter.CurrentForm != null} 1");
+                RVCLog.MSG($"{shifter.CurrentForm.race != null} 2");
+                RVCLog.MSG($"{shifter.CurrentForm.race.Humanlike} 3");
+                if (shifter.CurrentForm.race.Humanlike) { yield return target; continue; }
+                if (shifter.AttackedPawns.ContainsKey(pawn)) { yield return target; continue; }
+
+                float dist = IntVec3Utility.DistanceTo(pawn.Position, targThing.Position);
+
+
+                if (dist < 2f)
                 {
-                    float dist = IntVec3Utility.DistanceTo(pawn.Position, targThing.Position);
-
-
-                    if (dist < 2f)
-                    {
-                        shifter.AddPawnToAttackedList(pawn);
-                        yield return target;
-                    }
+                    shifter.AddPawnToAttackedList(pawn);
+                    yield return target;
                 }
+
             }
         }
     }

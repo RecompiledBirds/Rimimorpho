@@ -21,11 +21,11 @@ namespace Rimimorpho
 
             Listing_Standard listing_Standard = new Listing_Standard();
             listing_Standard.Begin(inRect);
-            listing_Standard.CheckboxLabeled("Use vanilla rimworld tabs: ", ref RimimorphoSettings.useRimworldTabs);
-            listing_Standard.CheckboxLabeled("Pawns can get infected: ", ref RimimorphoSettings.pawnsCanGetInfected);
+            listing_Standard.CheckboxLabeled("Rimimorpho_UseVanillaTabs".Translate(), ref RimimorphoSettings.useRimworldTabs);
+            listing_Standard.CheckboxLabeled("Rimimorpho_PawnsGetInfected".Translate(), ref RimimorphoSettings.pawnsCanGetInfected);
             if (RimimorphoSettings.pawnsCanGetInfected)
             {
-                listing_Standard.CheckboxLabeled("Pawns can get infected from contact with goo: ", ref RimimorphoSettings.pawnsCanGetInfectedViaContact);
+                listing_Standard.CheckboxLabeled("Rimimorpho_PawnsGetInfectedByContact".Translate(), ref RimimorphoSettings.pawnsCanGetInfectedViaContact);
             }
             listing_Standard.End();
             base.DoSettingsWindowContents(inRect);
@@ -33,7 +33,7 @@ namespace Rimimorpho
 
         public override string SettingsCategory()
         {
-            return "Rimimorpho Settings";
+            return "Rimimorpho_SettingsName".Translate();
         }
     }
 }

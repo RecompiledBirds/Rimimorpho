@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RVCRestructured;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -21,13 +22,14 @@ namespace Rimimorpho
                 {
                     yield return target;
                 }
+
                 else
                 {
-                    if (shifter.IsParentDef() || shifter.RaceProperties.Humanlike) { yield return target; } 
+                    if (shifter.CurrentForm.race.Humanlike) { yield return target; }
                     else
                     {
-                        float dist =IntVec3Utility.DistanceTo(thing.Position, targThing.Position);
-                        
+                        float dist = IntVec3Utility.DistanceTo(thing.Position, targThing.Position);
+
 
                         if (dist < 2f)
                         {

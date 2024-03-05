@@ -153,7 +153,7 @@ namespace Rimimorpho
                         Text.Anchor = TextAnchor.MiddleCenter;
                         Text.Font = GameFont.Medium;
                         XenotypeDef xenoDef = race.XenotypeDef;
-                        Widgets.Label(tmpSubBttnRect, $"Transform into {GetTFLabel(currentThingDef, xenoDef)}");  //TODO: Translationstring
+                        Widgets.Label(tmpSubBttnRect, $"Rimimorpho_TransformToLabel".Translate(GetTFLabel(currentThingDef,xenoDef).Named("LABEL")));
 
                         if (Mouse.IsOver(tmpSubBttnRect))
                         {
@@ -174,7 +174,7 @@ namespace Rimimorpho
                             }
                             else
                             {
-                                Messages.Message($"{pawn.LabelCap} can't transform into {GetTFLabel(currentThingDef, xenoDef)}! Their rest or food level is too low!", MessageTypeDefOf.RejectInput, false);
+                                Messages.Message($"Rimimorpho_CantTransformMessage".Translate(pawn.LabelCap.Named("PAWN"),GetTFLabel(currentThingDef,xenoDef).Named("LABEL")), MessageTypeDefOf.RejectInput, false);
                             }
                         }
 

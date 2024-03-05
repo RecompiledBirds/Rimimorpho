@@ -17,8 +17,14 @@ namespace Rimimorpho
             Pawn targetPawn = target as Pawn;
             Pawn pawn = __instance.Pawn;
             AmphiShifter shifter = pawn.TryGetComp<AmphiShifter>();
-            if(shifter==null ) { return; }
-           shifter.AddPawnToAttackedList(targetPawn);
+            if (shifter == null) { return; }
+            shifter.AddPawnToAttackedList(targetPawn);
+            if (verbToUse.tool.untranslatedLabel != "teeth") { return; }
+
+            if (Rand.Chance(0.05f))
+            {
+                targetPawn.health.AddHediff(AmphiDefs.RimMorpho_AmphimorphoGooInfection);
+            }
         }
     }
 }

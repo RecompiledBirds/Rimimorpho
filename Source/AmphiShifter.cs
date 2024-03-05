@@ -28,7 +28,7 @@ namespace Rimimorpho
             if (!knownSpecies.ContainsKey(pawn.def))
             {
                 knownSpecies.Add(pawn.def, new RaceList<StoredRace>());
-                knownSpecies[pawn.def].Add(new StoredRace(pawn.def, pawn?.genes?.Xenotype,pawn.story.bodyType));
+                knownSpecies[pawn.def].Add(new StoredRace(pawn.def, pawn?.genes?.Xenotype,pawn?.story?.bodyType));
                 return;
             }
             

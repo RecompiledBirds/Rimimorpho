@@ -26,9 +26,10 @@ namespace Rimimorpho
                     if (shifter.IsParentDef() || shifter.RaceProperties.Humanlike) { yield return target; } 
                     else
                     {
-                        float dist = Vector3.Distance(new Vector3(thing.Position.x,thing.Position.y,thing.Position.z), new Vector3(targThing.Position.x, targThing.Position.y, targThing.Position.z));
+                        float dist =IntVec3Utility.DistanceTo(thing.Position, targThing.Position);
+                        
 
-                        if (dist < 10f)
+                        if (dist < 2f)
                         {
                             yield return target;
                         }

@@ -13,6 +13,7 @@ namespace Rimimorpho
     {
         public static void Postfix(Pawn_FilthTracker __instance)
         {
+            if (!RimimorphoSettings.pawnsCanGetInfected || !RimimorphoSettings.pawnsCanGetInfectedViaContact) return;
             Pawn pawn = (Pawn)typeof(Pawn_FilthTracker).GetField("pawn",BindingFlags.NonPublic|BindingFlags.Instance).GetValue(__instance);
             List<Thing> thingList = pawn.Position.GetThingList(pawn.Map);
             for (int j = thingList.Count - 1; j >= 0; j--)

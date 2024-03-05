@@ -83,7 +83,7 @@ namespace Rimimorpho
                 float energyConsumedThisTick = TransformData.SkillStatVal / TransformData.CalculatedWorkTicks * (float) energy;
                 pawn.needs.food.CurLevel -= energyConsumedThisTick / 2f;
                 pawn.needs.rest.CurLevel -= energyConsumedThisTick / 2f;
-                if(Rand.Chance(0.3f))
+                if(Rand.Chance(0.01f) && workLeft %2 ==0)
                     FilthMaker.TryMakeFilth(pawn.Position, pawn.Map, AmphiDefs.RimMorpho_AmphimorphoGoo);
                 /*if (Convert.ToInt32(workLeft) % 100 == 0)*/ RVCLog.Log($"workLeft: {workLeft}, adjustedSkillVal: {TransformData.SkillStatVal}, energyConsumed: {energyConsumedThisTick}, predicted food/rest: {TransformData.PredictedFoodUse(Convert.ToInt32(workLeft))}/{TransformData.PredictedRestUse(Convert.ToInt32(workLeft))}, current food/rest: {pawn.needs.food.CurLevel}/{pawn.needs.rest.CurLevel}", debugOnly: true);
                 pawn.skills?.Learn(AmphiDefs.RimMorpho_Shifting, 1f, false);

@@ -1,4 +1,5 @@
 ﻿using Rimimorpho;
+using RimWorld;
 using RVCRestructured;
 using RVCRestructured.Shifter;
 using System;
@@ -37,8 +38,15 @@ namespace Rimimorpho
                 }
                 return;
             }
+            
             if (Pawn.def != AmphiDefs.RimMorpho_Amphimorpho)
+            {
+                ThingDef oldDef = Pawn.def;
+                XenotypeDef oldXenoType = Pawn.genes.Xenotype;
                 PawnChanger.ChangePawnRace(Pawn, AmphiDefs.RimMorpho_Amphimorpho);
+                AmphiShifter shifter = Pawn.GetComp<AmphiShifter>();
+                shifter.LearnSpecies(oldDef,oldXenoType);
+            }
             Pawn.health.RemoveHediff(parent);
 
         }

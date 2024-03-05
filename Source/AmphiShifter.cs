@@ -40,7 +40,8 @@ namespace Rimimorpho
 
         public void LearnSpecies(ThingDef def, XenotypeDef xenotypeDef)
         {
-            if (knownSpecies[def].Empty)
+            if (knownSpecies == null) { knownSpecies = new Dictionary<ThingDef, RaceList<StoredRace>>(); }
+            if (!knownSpecies.ContainsKey(def)|| knownSpecies[def].Empty)
             {
                 knownSpecies[def] = new RaceList<StoredRace>
                 {

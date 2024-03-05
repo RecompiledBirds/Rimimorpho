@@ -24,7 +24,7 @@ namespace Rimimorpho
                         return;
                     }
                     Random random = new Random();
-                    if (random.Next(0,100)>=95)
+                    if (random.Next(0,100)>=99)
                     {
                         bool hasInfection = pawn.health.hediffSet.HasHediff(AmphiDefs.RimMorpho_AmphimorphoGooInfection);
                         if (hasInfection)

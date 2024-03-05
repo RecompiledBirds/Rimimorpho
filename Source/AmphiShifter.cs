@@ -20,6 +20,36 @@ namespace Rimimorpho
     {
         private bool shifted = false;
 
+        private Dictionary<Pawn,int> attackedPawns = new Dictionary<Pawn, int>();
+
+        public Dictionary<Pawn, int> AttackedPawns
+        {
+            get
+            {
+                
+                return attackedPawns;
+            }
+        }
+
+
+        public void AddPawnToAttackedList(Pawn pawn)
+        {
+            if (!AttackedPawns.ContainsKey(pawn)) AttackedPawns[pawn] = GenTicks.TicksGame;
+        }
+        public void CleanupAttackedPawns()
+        {
+            List<Pawn> pawns = new List<Pawn>();
+            foreach(Pawn p in AttackedPawns.Keys)
+            {
+                int ticks = GenTicks.TicksGame;
+                int timeElapsed = ticks- AttackedPawns[p];
+                if (timeElapsed > 60000)
+                {
+                    pawns.Add(p);
+                }
+            }
+            foreach(Pawn pawn in pawns) { AttackedPawns.Remove(pawn); }
+        }
         public Dictionary<ThingDef, RaceList<StoredRace>> knownSpecies = new Dictionary<ThingDef, RaceList<StoredRace>>();
 
         public void LearnSpecies(Pawn pawn)

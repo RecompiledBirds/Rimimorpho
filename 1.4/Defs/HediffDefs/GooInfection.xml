@@ -7,15 +7,16 @@
 		<description>PLACEHOLDER DESC</description>
 		<makesSickThought>true</makesSickThought>
 		<tendable>true</tendable>
+		<lethalSeverity>3</lethalSeverity>
 		<comps>
 			<li Class="HediffCompProperties_TendDuration">
 				<baseTendDurationHours>12</baseTendDurationHours>
-				<severityPerDayTended>-0.53</severityPerDayTended>
+				<severityPerDayTended>-0.1</severityPerDayTended>
 			</li>
 			<li Class="HediffCompProperties_Immunizable">
-				<severityPerDayNotImmune>0.2</severityPerDayNotImmune>
-				<immunityPerDaySick>0.6441</immunityPerDaySick>
-				<severityPerDayImmune>-0.70</severityPerDayImmune>
+				<severityPerDayNotImmune>0.5</severityPerDayNotImmune>
+				<immunityPerDaySick>0.2441</immunityPerDaySick>
+				<severityPerDayImmune>0.001</severityPerDayImmune>
 				<immunityPerDayNotSick>-0.40</immunityPerDayNotSick>
 			</li>
 			<li Class="HediffCompProperties_Discoverable">
@@ -28,10 +29,17 @@
 		<stages>
 			<li>
 				<label>minor</label>
+				
 			</li>
 			<li>
 				<minSeverity>0.33</minSeverity>
 				<label>major</label>
+				<capMods>
+					<li>
+						<capacity>Consciousness</capacity>
+						<setMax>0.1</setMax>
+					</li>
+				</capMods>
 			</li>
 			<li>
 				<minSeverity>0.78</minSeverity>

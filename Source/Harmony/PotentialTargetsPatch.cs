@@ -27,9 +27,6 @@ namespace Rimimorpho
                 }
 
                 shifter.CleanupAttackedPawns();
-                RVCLog.MSG($"{shifter.CurrentForm != null} 1");
-                RVCLog.MSG($"{shifter.CurrentForm.race != null} 2");
-                RVCLog.MSG($"{shifter.CurrentForm.race.Humanlike} 3");
                 if (shifter.CurrentForm.race.Humanlike) { yield return target; continue; }
                 if (shifter.AttackedPawns.ContainsKey(pawn)) { yield return target; continue; }
 

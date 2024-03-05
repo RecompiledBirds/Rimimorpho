@@ -2,16 +2,29 @@
 <Defs>
 	<StatDef>
 		<defName>RimMorpho_TransformationStat</defName>
-		<label>transformation </label>
-		<description>This changes the max health a part can have.</description>
-		<category>BasicsNonPawnImportant</category>
-		<defaultBaseValue>100</defaultBaseValue>
-		<minValue>1</minValue>
-		<roundValue>true</roundValue>
-		<toStringStyle>Integer</toStringStyle>
-		<roundToFiveOver>200</roundToFiveOver>
+		<label>transformation speed</label>
+		<description>A multiplier on the speed at which this amphimorpho can transform.</description>
+		<category>PawnMisc</category>
+		<defaultBaseValue>1</defaultBaseValue>
+		<minValue>0.1</minValue>
+		<toStringStyle>PercentZero</toStringStyle>
+
+		<skillNeedFactors>
+			<li Class="SkillNeed_BaseBonus">
+				<skill>RimMorpho_Shifting</skill>
+				<baseValue>0.04</baseValue>
+				<bonusPerLevel>0.12</bonusPerLevel>
+			</li>
+		</skillNeedFactors>
+		
+		<capacityFactors>
+			<li>
+				<capacity>Manipulation</capacity>
+				<weight>1</weight>
+			</li>
+		</capacityFactors>
+		
 		<showNonAbstract>true</showNonAbstract>
-		<scenarioRandomizable>true</scenarioRandomizable>
 		<showOnPawns>false</showOnPawns>
 		<displayPriorityInCategory>99997</displayPriorityInCategory>
 	</StatDef>

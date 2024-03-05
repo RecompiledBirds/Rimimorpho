@@ -22,12 +22,12 @@ namespace Rimimorpho
         protected override IEnumerable<Toil> MakeNewToils()
         {
             AmphiShifter amphiShifter = pawn.TryGetComp<AmphiShifter>();
-            ShiftUtils.GetTransformData(pawn, amphiShifter, TargetA.Pawn, out int ticks, out double energy);
-            Toil waitToil= Toils_General.Wait(ticks).WithProgressBarToilDelay(TargetIndex.A);
-            waitToil.AddPreTickAction(ShapeShift);
+            //ShiftUtils.GetTransformData(pawn, amphiShifter, TargetA.Pawn, out float ticks, out double energy);
+            //Toil waitToil= Toils_General.Wait(ticks).WithProgressBarToilDelay(TargetIndex.A);
+            //waitToil.AddPreTickAction(ShapeShift);
             yield return new Toil
             {
-                initAction = delegate
+                initAction = () =>
                 {
                     amphiShifter.RevertForm();
                 }

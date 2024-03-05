@@ -1,51 +1,129 @@
-﻿using RimWorld;
-using System;
+﻿using Rimimorpho.Windows;
+using RimWorld;
+using RVCRestructured.Shifter;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
 using Verse;
 using Verse.AI;
-using static UnityEngine.GraphicsBuffer;
 
 namespace Rimimorpho
 {
     public class AmphiShifterProps : CompProperties
     {
-        public AmphiShifterProps() { 
+        public AmphiShifterProps() 
+        { 
             this.compClass=typeof(AmphiShifter);
         }
     }
-    public class AmphiShifter : RVCRestructured.Shifter.ShapeshifterComp
+    public class AmphiShifter : ShapeshifterComp
     {
         private bool shifted = false;
-        
-        public List<StoredRace> knownRaces= new List<StoredRace>();
 
+        private Dictionary<Pawn,int> attackedPawns = new Dictionary<Pawn, int>();
+
+        public Dictionary<Pawn, int> AttackedPawns
+        {
+            get
+            {
+                
+                return attackedPawns;
+            }
+        }
+
+
+        public void AddPawnToAttackedList(Pawn pawn)
+        {
+            if (!AttackedPawns.ContainsKey(pawn)) AttackedPawns[pawn] = GenTicks.TicksGame;
+        }
+        public void CleanupAttackedPawns()
+        {
+            List<Pawn> pawns = new List<Pawn>();
+            foreach(Pawn p in AttackedPawns.Keys)
+            {
+                int ticks = GenTicks.TicksGame;
+                int timeElapsed = ticks- AttackedPawns[p];
+                if (timeElapsed > 60000)
+                {
+                    pawns.Add(p);
+                }
+            }
+            foreach(Pawn pawn in pawns) { AttackedPawns.Remove(pawn); }
+        }
+        public Dictionary<ThingDef, RaceList<StoredRace>> knownSpecies = new Dictionary<ThingDef, RaceList<StoredRace>>();
+
+        public void LearnSpecies(Pawn pawn)
+        {
+            if (knownSpecies == null) { knownSpecies = new Dictionary<ThingDef, RaceList<StoredRace>>(); }
+            if (!knownSpecies.ContainsKey(pawn.def))
+            {
+                knownSpecies.Add(pawn.def, new RaceList<StoredRace>());
+                knownSpecies[pawn.def].Add(new StoredRace(pawn.def, pawn?.genes?.Xenotype,pawn?.story?.bodyType));
+                return;
+            }
+            
+            if (!Enumerable.Any((IEnumerable<StoredRace>)knownSpecies[pawn.def], race => race.ContainsFeature(pawn.def, pawn?.genes?.Xenotype)))
+            {
+                knownSpecies[pawn.def].Add(new StoredRace(pawn.def, pawn.genes?.Xenotype, pawn.story.bodyType));
+            }
+        }
+
+        public void LearnSpecies(ThingDef def, XenotypeDef xenotypeDef)
+        {
+            if (knownSpecies == null) { knownSpecies = new Dictionary<ThingDef, RaceList<StoredRace>>(); }
+            if (!knownSpecies.ContainsKey(def)|| knownSpecies[def].Empty)
+            {
+                knownSpecies[def] = new RaceList<StoredRace>
+                {
+                    new StoredRace(def, xenotypeDef)
+                };
+                return;
+            }
+            if (!Enumerable.Any((IEnumerable<StoredRace>)knownSpecies[def], race => race.ContainsFeature(def, xenotypeDef)))
+            {
+                knownSpecies[def].Add(new StoredRace(def, xenotypeDef));
+            }
+        }
+
+        public void LearnSpecies(ThingDef def)
+        {
+            if (knownSpecies[def].Empty)
+            {
+                knownSpecies[def] = new RaceList<StoredRace>
+                {
+                    new StoredRace(def)
+                };
+                return;
+            }
+            if (!Enumerable.Any((IEnumerable<StoredRace>)knownSpecies[def], race => race.ContainsFeature(def)))
+            {
+                knownSpecies[def].Add(new StoredRace(def));
+            }
+        }
+        //TODO: Make strings translateable
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
             Pawn pawn = parent as Pawn;
             Command_Target command = new Command_Target
             {
-                defaultLabel = "tuch",
+                defaultLabel = "Rimimorpho_LearnRace".Translate(),
                 icon = AmphiDefs.RimMorpho_Amphimorpho.uiIcon,
                 targetingParams = new TargetingParameters
                 {
                     canTargetAnimals = true,
                     canTargetPawns = true,
-                    canTargetHumans = true
+                    canTargetHumans = true,
+                    canTargetSelf = false
                 },
                 action = delegate (LocalTargetInfo target)
                 {
-                    Job job = JobMaker.MakeJob(AmphiDefs.RimMorpho_TouchPawn, target.Pawn);
+                    Job job = JobMaker.MakeJob(AmphiDefs.RimMorpho_TouchPawn, target.Pawn, pawn);
                     pawn.jobs.TryTakeOrderedJob(job);
                 }
             };
             Command_Action revert = new Command_Action
             {
-                defaultLabel = "fuck go back",
+                defaultLabel = "Rimimorpho_RevertForm".Translate(),
                 icon = AmphiDefs.RimMorpho_Amphimorpho.uiIcon,
                 action = delegate ()
                 {
@@ -54,8 +132,15 @@ namespace Rimimorpho
                 }
 
             };
+            Command_Action transMenu = new Command_Action
+            {
+                defaultLabel = "Rimimorpho_OpenTransformationWindow".Translate(),
+                icon = AmphiDefs.RimMorpho_Amphimorpho.uiIcon,
+                action = () => Find.WindowStack.Add(new TransformationSelectionWindow(pawn))
+            };
             yield return command;
             yield return revert;
+            yield return transMenu;
         }
 
         private RaceProperties raceProperties = null;
@@ -73,24 +158,14 @@ namespace Rimimorpho
             }
         }
 
-        public override void SetForm(Pawn pawn)
+        public override void SetForm(Pawn pawn, XenotypeDef xenotypeDef = null)
         {
-            base.SetForm(pawn);
-            /*
-            if (!knownRaces.Any(x => x.storedDef == pawn.def && (!(x is StoredRaceWithXenoType xenoRace) || xenoRace.storedXenotypeDef == pawn.genes.Xenotype)))
-            {
-                knownRaces.Add(new StoredRaceWithXenoType() { storedDef=pawn.def,storedXenotypeDef=pawn.genes.Xenotype });
-            }
-            */
+            base.SetForm(pawn, xenotypeDef);
         }
 
         public override void SetForm(ThingDef def)
         {
             base.SetForm(def);
-            raceProperties = null;
-            /*
-            if (!knownRaces.Any(x => x.storedDef == def))
-                knownRaces.Add(new StoredRace() { storedDef = def });*/
         }
 
         private int ticksDownedFor = 0;
@@ -116,10 +191,7 @@ namespace Rimimorpho
         {
             Scribe_Values.Look(ref ticksDownedFor, nameof(ticksDownedFor));
             Scribe_Values.Look(ref shifted, nameof(shifted));
-            base.PostExposeData();
-          //  Scribe_Collections.Look(ref knownRaces,nameof(knownRaces),LookMode.Deep);
+            Scribe_Collections.Look(ref knownSpecies, nameof(knownSpecies), LookMode.Def, LookMode.Deep);
         }
     }
-
- 
 }

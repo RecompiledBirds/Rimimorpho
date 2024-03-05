@@ -11,9 +11,13 @@ namespace Rimimorpho
     {
         private XenotypeDef storedXenotypeDef;
         private ThingDef storedThingDef;
+        private BodyTypeDef storedBodyTypeDef;
 
         public XenotypeDef XenotypeDef => storedXenotypeDef;
         public ThingDef ThingDef => storedThingDef;
+
+
+        public BodyTypeDef BodyTypeDef => storedBodyTypeDef;
 
         /// <summary>
         ///     DON'T USE
@@ -34,6 +38,13 @@ namespace Rimimorpho
             storedXenotypeDef = xenotypeDef;
         }
 
+        public StoredRace(ThingDef thingDef, XenotypeDef xenotypeDef, BodyTypeDef bodyTypeDef)
+        {
+            storedThingDef = thingDef;
+            storedXenotypeDef = xenotypeDef;
+            storedBodyTypeDef = bodyTypeDef;
+        }
+
         public bool ContainsFeature(ThingDef thingDef, XenotypeDef xenotypeDef = null)
         {
             if (thingDef == storedThingDef) return true;
@@ -46,6 +57,7 @@ namespace Rimimorpho
         {
             Scribe_Defs.Look(ref storedThingDef, nameof(storedThingDef));
             Scribe_Defs.Look(ref storedXenotypeDef, nameof(storedXenotypeDef));
+            Scribe_Defs.Look(ref storedBodyTypeDef, nameof(storedBodyTypeDef));
         }
 
         public string GetUniqueLoadID()

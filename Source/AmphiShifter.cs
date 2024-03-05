@@ -24,18 +24,17 @@ namespace Rimimorpho
 
         public void LearnSpecies(Pawn pawn)
         {
-            Log.Message("test");
             if (knownSpecies == null) { knownSpecies = new Dictionary<ThingDef, RaceList<StoredRace>>(); }
             if (!knownSpecies.ContainsKey(pawn.def))
             {
                 knownSpecies.Add(pawn.def, new RaceList<StoredRace>());
-                knownSpecies[pawn.def].Add(new StoredRace(pawn.def, pawn?.genes?.Xenotype));
+                knownSpecies[pawn.def].Add(new StoredRace(pawn.def, pawn?.genes?.Xenotype,pawn.story.bodyType));
                 return;
             }
             
             if (!Enumerable.Any((IEnumerable<StoredRace>)knownSpecies[pawn.def], race => race.ContainsFeature(pawn.def, pawn?.genes?.Xenotype)))
             {
-                knownSpecies[pawn.def].Add(new StoredRace(pawn.def, pawn.genes?.Xenotype));
+                knownSpecies[pawn.def].Add(new StoredRace(pawn.def, pawn.genes?.Xenotype, pawn.story.bodyType));
             }
         }
 

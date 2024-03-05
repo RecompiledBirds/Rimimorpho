@@ -31,6 +31,7 @@ namespace Rimimorpho
 
         public static StoredRace NextRaceTarget { get; internal set; }
         public static XenotypeDef NextXenoTarget { get; internal set; }
+        public static BodyTypeDef NextBodyTypeTarget { get; internal set; }
 
         public override bool TryMakePreToilReservations(bool errorOnFailed) => true;
 
@@ -58,7 +59,7 @@ namespace Rimimorpho
             transform.socialMode = RandomSocialMode.SuperActive;
             transform.defaultCompleteMode = ToilCompleteMode.Never;
             transform.WithProgressBar(TargetIndex.B, () => 1f - workLeft / TransformData.CalculatedWorkTicks);
-
+            BodyTypeDef bodyTypeDef=NextBodyTypeTarget;
             transform.initAction = () =>
             {
                 transformData = ShiftUtils.GetTransformData(pawn, ShifterComp, NextRaceTarget.ThingDef, NextXenoTarget);
@@ -99,7 +100,8 @@ namespace Rimimorpho
                     return;
                 }
 
-                pawn.TryGetComp<AmphiShifter>().SetForm(TransformData.TargetRace, TransformData.TargetXenoDef);
+                pawn.TryGetComp<AmphiShifter>().SetForm(TransformData.TargetRace, TransformData.TargetXenoDef,bodyTypeDef);
+                
             });
 
             AddFailCondition(() => TransformData?.HasEnoughFoodLeft(workLeft) == false || TransformData?.HasEnoughRestLeft(workLeft) == false);

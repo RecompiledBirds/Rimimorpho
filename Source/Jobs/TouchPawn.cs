@@ -33,7 +33,7 @@ namespace Rimimorpho
 
         public override string GetReport()
         {
-            return "Rimimorpho_LearningFromPawn".Translate((TargetA.Pawn.Name != null ? TargetA.Pawn.Name.ToStringShort : TargetA.Pawn.Label).Named("TARGET_NAME"));
+            return "Rimimorpho_LearningFromPawn".Translate((TargetA.Pawn.Name != null ? TargetA.Pawn.Name.ToStringShort : TargetA.Pawn.Label));
         }
 
         protected override IEnumerable<Toil> MakeNewToils()

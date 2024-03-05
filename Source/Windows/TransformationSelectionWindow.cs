@@ -281,7 +281,7 @@ namespace Rimimorpho
         {
             TransformTargetJob.NextRaceTarget = race;
             TransformTargetJob.NextXenoTarget = xenotype;
-
+            TransformTargetJob.NextBodyTypeTarget = race.BodyTypeDef ?? pawn.story.bodyType;
             pawn.jobs.TryTakeOrderedJob(JobMaker.MakeJob(AmphiDefs.RimMorpho_TransformTarget));
             Close();
         }

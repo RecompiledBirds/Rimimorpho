@@ -26,6 +26,7 @@ namespace Rimimorpho
             if (RimimorphoSettings.pawnsCanGetInfected)
             {
                 listing_Standard.CheckboxLabeled("Rimimorpho_PawnsGetInfectedByContact".Translate(), ref RimimorphoSettings.pawnsCanGetInfectedViaContact);
+                listing_Standard.CheckboxLabeled("Rimimorpho_PawnsGetInfectedByBite".Translate(), ref RimimorphoSettings.pawnsCanGetInfectedViaBite);
             }
             listing_Standard.End();
             base.DoSettingsWindowContents(inRect);

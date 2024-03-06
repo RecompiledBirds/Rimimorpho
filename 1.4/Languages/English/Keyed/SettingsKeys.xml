@@ -4,5 +4,7 @@
 	<Rimimorpho_UseVanillaTabs>Use vanilla rimworld tabs:</Rimimorpho_UseVanillaTabs>
 	<Rimimorpho_PawnsGetInfected>Pawns can get infected:</Rimimorpho_PawnsGetInfected>
 	<Rimimorpho_PawnsGetInfectedByContact>Pawns can get infected from contact with goo:</Rimimorpho_PawnsGetInfectedByContact>
+	<Rimimorpho_PawnsGetInfectedByBite>Pawns can get infected from being bitten:</Rimimorpho_PawnsGetInfectedByBite>
+	<Rimimorpho_PawnsCanBeAmphimorpho>Amphimorpho can disguise as other pawns:</Rimimorpho_PawnsCanBeAmphimorpho>
 </LanguageData>
 

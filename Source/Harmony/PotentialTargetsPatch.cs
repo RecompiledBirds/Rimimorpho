@@ -37,8 +37,9 @@ namespace Rimimorpho
 
                 float dist = IntVec3Utility.DistanceTo(pawn.Position, targThing.Position);
 
-
-                if (dist < Math.Min(2f,6f-tPawn.skills.GetSkill(AmphiDefs.RimMorpho_Shifting).Level)*1.5f)
+                float value = Math.Max(2f, 6f - tPawn.skills.GetSkill(AmphiDefs.RimMorpho_Shifting).Level);
+                if (pawn.Faction.IsPlayer) value += 5;
+                if (dist < value)
                 {
                     shifter.AddPawnToAttackedList(pawn);
                     yield return target;

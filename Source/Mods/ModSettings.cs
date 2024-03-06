@@ -13,6 +13,7 @@ namespace Rimimorpho
         public static bool pawnsCanGetInfected = true;
         public static bool pawnsCanGetInfectedViaContact = true;
         public static bool pawnsCanGetInfectedViaBite = true;
+        public static bool somePawnsAreAmphimorpho = true;
         public override void ExposeData()
         {
             Scribe_Values.Look(ref useRimworldTabs, nameof(useRimworldTabs));

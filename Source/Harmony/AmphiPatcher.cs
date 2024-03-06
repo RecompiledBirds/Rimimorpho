@@ -24,7 +24,9 @@ namespace Rimimorpho
             harmony.Patch(AccessTools.Method(typeof(SkillUI), nameof(SkillUI.DrawSkillsOf)), prefix: new HarmonyMethod(typeof(SkillPatch), nameof(SkillPatch.Prefix)));
             harmony.Patch(AccessTools.Method(typeof(AttackTargetsCache), "GetPotentialTargetsFor"), postfix: new HarmonyMethod(typeof(PotentialTargetsPatch),nameof(PotentialTargetsPatch.Postfix)));
             harmony.Patch(AccessTools.Method(typeof(Pawn_MeleeVerbs), "TryMeleeAttack"), postfix: new HarmonyMethod(typeof(MeleeVerbsPatch), nameof(MeleeVerbsPatch.Postfix)));
-            Log.Message("Amphi patches completed!");
+            harmony.Patch(AccessTools.Method(typeof(PawnGenerator), "TryGenerateNewPawnInternal"), transpiler: new HarmonyMethod(typeof(HiddenNoodlesPatch), nameof(HiddenNoodlesPatch.Transpiler)));
+            harmony.Patch(AccessTools.Method(typeof(PawnGenerator), "GenerateBodyType"), postfix: new HarmonyMethod(typeof(BodyTypeGenPatch), nameof(BodyTypeGenPatch.Posfix)));
+            RVCLog.MSG($"Rimimorpho completed {harmony.GetPatchedMethods().Count()} patches!");
         }
     }
 }

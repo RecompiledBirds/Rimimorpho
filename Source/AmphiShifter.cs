@@ -85,10 +85,26 @@ namespace Rimimorpho
                 knownSpecies[def].Add(new StoredRace(def, xenotypeDef));
             }
         }
+        public void LearnSpecies(ThingDef def, XenotypeDef xenotypeDef, BodyTypeDef bodyTypeDef)
+        {
+            if (knownSpecies == null) { knownSpecies = new Dictionary<ThingDef, RaceList<StoredRace>>(); }
+            if (!knownSpecies.ContainsKey(def) || knownSpecies[def].Empty)
+            {
+                knownSpecies[def] = new RaceList<StoredRace>
+                {
+                    new StoredRace(def, xenotypeDef,bodyTypeDef)
+                };
+                return;
+            }
+            if (!Enumerable.Any((IEnumerable<StoredRace>)knownSpecies[def], race => race.ContainsFeature(def, xenotypeDef)))
+            {
+                knownSpecies[def].Add(new StoredRace(def, xenotypeDef,bodyTypeDef));
+            }
+        }
 
         public void LearnSpecies(ThingDef def)
         {
-            if (knownSpecies[def].Empty)
+            if (!knownSpecies.ContainsKey(def) || (knownSpecies[def].Empty))
             {
                 knownSpecies[def] = new RaceList<StoredRace>
                 {
@@ -159,15 +175,6 @@ namespace Rimimorpho
             }
         }
 
-        public override void SetForm(Pawn pawn, XenotypeDef xenotypeDef = null)
-        {
-            base.SetForm(pawn, xenotypeDef);
-        }
-
-        public override void SetForm(ThingDef def)
-        {
-            base.SetForm(def);
-        }
 
         private int ticksDownedFor = 0;
         public override void CompTick()
@@ -188,9 +195,16 @@ namespace Rimimorpho
 
             if(GenTicks.TicksGame % 10 == 0 && CurrentForm!=parent.def)
             {
-                pawn.skills.Learn(AmphiDefs.RimMorpho_Shifting, 10);
+
+                pawn.skills.Learn(AmphiDefs.RimMorpho_Shifting, 2);
             }
             base.CompTick();
+        }
+
+        public override void Notify_KilledLeavingsLeft(List<Thing> leavings)
+        {
+            RevertForm();
+            base.Notify_KilledLeavingsLeft(leavings);
         }
 
         public override void PostExposeData()
@@ -198,6 +212,11 @@ namespace Rimimorpho
             Scribe_Values.Look(ref ticksDownedFor, nameof(ticksDownedFor));
             Scribe_Values.Look(ref shifted, nameof(shifted));
             Scribe_Collections.Look(ref knownSpecies, nameof(knownSpecies), LookMode.Def, LookMode.Deep);
+        }
+
+        public override float OffsetStat(StatDef stat)
+        {
+            return base.OffsetStat(stat);
         }
     }
 }

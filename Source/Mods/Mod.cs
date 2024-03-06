@@ -22,6 +22,7 @@ namespace Rimimorpho
             Listing_Standard listing_Standard = new Listing_Standard();
             listing_Standard.Begin(inRect);
             listing_Standard.CheckboxLabeled("Rimimorpho_UseVanillaTabs".Translate(), ref RimimorphoSettings.useRimworldTabs);
+            listing_Standard.CheckboxLabeled("Rimimorpho_PawnsCanBeAmphimorpho".Translate(), ref RimimorphoSettings.somePawnsAreAmphimorpho);
             listing_Standard.CheckboxLabeled("Rimimorpho_PawnsGetInfected".Translate(), ref RimimorphoSettings.pawnsCanGetInfected);
             if (RimimorphoSettings.pawnsCanGetInfected)
             {

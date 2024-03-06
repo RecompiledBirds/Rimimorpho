@@ -36,6 +36,7 @@ namespace Rimimorpho
         {
             if (!AttackedPawns.ContainsKey(pawn)) AttackedPawns[pawn] = GenTicks.TicksGame;
         }
+
         public void CleanupAttackedPawns()
         {
             List<Pawn> pawns = new List<Pawn>();
@@ -183,6 +184,11 @@ namespace Rimimorpho
             if (ticksDownedFor >= 3600)
             {
                 RevertForm();
+            }
+
+            if(GenTicks.TicksGame % 10 == 0 && CurrentForm!=parent.def)
+            {
+                pawn.skills.Learn(AmphiDefs.RimMorpho_Shifting, 10);
             }
             base.CompTick();
         }

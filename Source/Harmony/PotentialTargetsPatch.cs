@@ -19,6 +19,7 @@ namespace Rimimorpho
             foreach (IAttackTarget target in values)
             {
                 Thing targThing = target.Thing;
+                Pawn tPawn = targThing as Pawn;
                 AmphiShifter shifter = targThing.TryGetComp<AmphiShifter>();
                 if (shifter == null)
                 {
@@ -37,7 +38,7 @@ namespace Rimimorpho
                 float dist = IntVec3Utility.DistanceTo(pawn.Position, targThing.Position);
 
 
-                if (dist < 2f)
+                if (dist < Math.Min(2f,6f-tPawn.skills.GetSkill(AmphiDefs.RimMorpho_Shifting).Level)*1.5f)
                 {
                     shifter.AddPawnToAttackedList(pawn);
                     yield return target;

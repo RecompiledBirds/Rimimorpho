@@ -21,7 +21,7 @@ namespace Rimimorpho
             shifter.AddPawnToAttackedList(targetPawn);
             if (verbToUse.tool.untranslatedLabel != "teeth") { return; }
 
-            if (RimimorphoSettings.pawnsCanGetInfectedViaBite && Rand.Chance(0.05f))
+            if (RimimorphoSettings.pawnsCanGetInfected && RimimorphoSettings.pawnsCanGetInfectedViaBite && Rand.Chance(0.05f))
             {
                 targetPawn.health.AddHediff(AmphiDefs.RimMorpho_AmphimorphoGooInfection);
             }

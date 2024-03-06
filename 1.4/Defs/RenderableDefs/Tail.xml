@@ -3,6 +3,7 @@
 	<RVCRestructured.Defs.RenderableDef ParentName="RimMorpho_BaseAmphiBodyPart">
 		<defName>RimMorpho_Tail</defName>
 		<bodyPart>Head</bodyPart>
+		<showsInBed>false</showsInBed>
 		<flipLayerEastWest>false</flipLayerEastWest>
 		<north>
 			<position>(0,0.03,0)</position>

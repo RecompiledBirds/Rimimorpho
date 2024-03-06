@@ -27,7 +27,11 @@ namespace Rimimorpho
                 }
 
                 shifter.CleanupAttackedPawns();
-                if (shifter.CurrentForm.race.Humanlike) { yield return target; continue; }
+                if (shifter.CurrentForm.race.Humanlike) {
+                    shifter.AddPawnToAttackedList(pawn);
+                    yield return target; 
+                    continue; 
+                }
                 if (shifter.AttackedPawns.ContainsKey(pawn)) { yield return target; continue; }
 
                 float dist = IntVec3Utility.DistanceTo(pawn.Position, targThing.Position);

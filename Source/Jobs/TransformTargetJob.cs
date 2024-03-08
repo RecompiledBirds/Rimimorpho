@@ -1,5 +1,4 @@
-﻿using Rimimorpho;
-using RVCRestructured;
+﻿using RVCRestructured;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Verse.AI;
 using Verse;
-using System.Data.Odbc;
 using RimWorld;
-using System.Security.Cryptography;
 
 namespace Rimimorpho
 {
@@ -20,6 +17,7 @@ namespace Rimimorpho
         private AmphiShifter amphiShifter;
         private TransformData transformData;
 
+        private IntVec3 lookingAt;
         private float workLeft = -1000f;
 
         private double energyConsumed;
@@ -64,6 +62,7 @@ namespace Rimimorpho
             {
                 transformData = ShiftUtils.GetTransformData(pawn, ShifterComp, NextRaceTarget.ThingDef, NextXenoTarget);
                 transformData.Active = true;
+                lookingAt = pawn.Position + new IntVec3(1, 0, 1);
 
                 energy = TransformData.CalculatedEnergyUsed;
                 workLeft = TransformData.CalculatedWorkTicks;
@@ -80,12 +79,24 @@ namespace Rimimorpho
             {
                 workLeft -= TransformData.SkillStatVal;
 
-                float energyConsumedThisTick = TransformData.SkillStatVal / TransformData.CalculatedWorkTicks * (float) energy;
+                float energyConsumedThisTick = TransformData.SkillStatVal / TransformData.CalculatedWorkTicks * (float)energy;
                 pawn.needs.food.CurLevel -= energyConsumedThisTick / 2f;
                 pawn.needs.rest.CurLevel -= energyConsumedThisTick / 2f;
 
-                if(Rand.Chance(0.01f / TransformData.SkillStatVal)) FilthMaker.TryMakeFilth(pawn.Position, pawn.Map, AmphiDefs.RimMorpho_AmphimorphoGoo);
-                /*if (Convert.ToInt32(workLeft) % 100 == 0)*/ RVCLog.Log($"workLeft: {workLeft}, adjustedSkillVal: {TransformData.SkillStatVal}, energyConsumed: {energyConsumedThisTick}, predicted food/rest: {TransformData.PredictedFoodUse(Convert.ToInt32(workLeft))}/{TransformData.PredictedRestUse(Convert.ToInt32(workLeft))}, current food/rest: {pawn.needs.food.CurLevel}/{pawn.needs.rest.CurLevel}", debugOnly: true);
+                if (Rand.Chance(0.1f * (1f - workLeft / TransformData.CalculatedWorkTicks)))
+                {
+                    lookingAt = lookingAt.RotatedBy(RotationDirection.Clockwise);
+                    pawn.rotationTracker.FaceCell(pawn.Position + lookingAt);
+                }
+
+
+                RVCLog.Log($"workLeft: {workLeft}, " +
+                    $"adjustedSkillVal: {TransformData.SkillStatVal}, " +
+                    $"energyConsumed: {energyConsumedThisTick}, " +
+                    $"predicted food/rest: {TransformData.PredictedFoodUse(Convert.ToInt32(workLeft))}" +
+                    $"/{TransformData.PredictedRestUse(Convert.ToInt32(workLeft))}, " +
+                    $"current food/rest: {pawn.needs.food.CurLevel}/{pawn.needs.rest.CurLevel}", debugOnly: true);
+
                 pawn.skills?.Learn(AmphiDefs.RimMorpho_Shifting, 1f, false);
                 if (workLeft <= 0f) ReadyForNextToil();
             };

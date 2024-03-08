@@ -102,92 +102,63 @@ namespace Rimimorpho
             Widgets.BeginScrollView(scrollAreaRect, ref scrollHeight, scrollAreaInnerRect);
             Widgets.BeginGroup(scrollAreaRect);
 
-            int curHeight = 0;
+            int highlightHeight = 0;
             float yOffset = 0f;
             for (int i = 0; i < storedThingDefs.Count; i++)
             {
-                bool thisIsSelectedRace = i == selectedRace;
-                Rect tmpBttnRect = GetTmpBttnRect(i);
-                Rect descLabelRect = new Rect(margin * 2f + tmpBttnRect.height + bttnDescHeight, tmpBttnRect.yMax - bttnDescHeight, tmpBttnRect.width, bttnDescHeight);
-                Rect expandImageRect = new Rect(descLabelRect) { x = margin + tmpBttnRect.height, width = descLabelRect.height };
+                bool indexIsSelectedRace = i == selectedRace;
+                Rect raceButton = GetTmpBttnRect(i);
+                Rect descLabelRect = new Rect(margin * 2f + raceButton.height + bttnDescHeight, raceButton.yMax - bttnDescHeight, raceButton.width, bttnDescHeight);
+                Rect expandImageRect = new Rect(descLabelRect) { x = margin + raceButton.height, width = descLabelRect.height };
                 ThingDef currentThingDef = storedThingDefs[i];
 
-                HighlightUtil.DrawHighlights(curHeight, tmpBttnRect);
+                HighlightUtil.DrawHighlights(highlightHeight++, raceButton);
 
-                Widgets.DrawHighlightIfMouseover(tmpBttnRect);
-                Widgets.DrawLineHorizontal(0f, tmpBttnRect.yMax, tmpBttnRect.width);
+                Widgets.DrawHighlightIfMouseover(raceButton);
+                Widgets.DrawLineHorizontal(0f, raceButton.yMax, raceButton.width);
 
-                Widgets.DefIcon(tmpBttnRect.LeftPartPixels(tmpBttnRect.height), currentThingDef);
+                Widgets.DefIcon(raceButton.LeftPartPixels(raceButton.height), currentThingDef);
                 Text.Font = GameFont.Tiny;
                 Widgets.Label(descLabelRect, currentThingDef.LabelCap);
-                Widgets.DrawTextureFitted(expandImageRect, thisIsSelectedRace ? TexButton.Collapse : TexButton.Reveal, 1f);
-                if (Widgets.ButtonInvisible(tmpBttnRect))
+                Widgets.DrawTextureFitted(expandImageRect, indexIsSelectedRace ? TexButton.Collapse : TexButton.Reveal, 1f);
+                DrawRaceButton(i, indexIsSelectedRace, raceButton, currentThingDef);
+
+                if (!indexIsSelectedRace) continue;
+
+                for (int j = 0; j < storedPawnRaces[currentThingDef].Length; j++)
                 {
-                    if (thisIsSelectedRace)
-                    {
-                        selectedRace = -1;
-                        transformData = null;
-                        scrollAreaInnerRect = scrollAreaRect.GetInnerScrollRect((bttnHeight + margin) * storedPawnRaces.Count);
-                        SoundDefOf.TabClose.PlayOneShotOnCamera();
-                    }
-                    else
-                    {
-                        selectedRace = i;
-                        scrollAreaInnerRect = scrollAreaRect.GetInnerScrollRect((bttnHeight + margin) * (storedPawnRaces.Count + storedPawnRaces[currentThingDef].Length));
-                        SoundDefOf.TabOpen.PlayOneShotOnCamera();
-                    }
+                    yOffset += bttnHeight;
+                    Rect tmpSubBttnRect = GetTmpBttnRect(i, subButtonXOffset);
+
+                    StoredRace race = storedPawnRaces[currentThingDef][j];
+
+                    HighlightUtil.DrawHighlights(highlightHeight++, tmpSubBttnRect);
+
+                    Text.Anchor = TextAnchor.MiddleCenter;
+                    Text.Font = GameFont.Medium;
+                    XenotypeDef xenoDef = race.XenotypeDef;
+                    Widgets.Label(tmpSubBttnRect, $"Rimimorpho_TransformToLabel".Translate(GetTFLabel(currentThingDef, xenoDef).Named("LABEL")));
+                    HandleMouseOver(currentThingDef, tmpSubBttnRect, xenoDef);
+                    HandleSubButton(currentThingDef, tmpSubBttnRect, race, xenoDef);
                 }
-                curHeight++;
-
-                if (thisIsSelectedRace)
-                {
-                    for (int j = 0; j < storedPawnRaces[currentThingDef].Length; j++)
-                    {
-                        yOffset += bttnHeight;
-                        Rect tmpSubBttnRect = GetTmpBttnRect(i, subButtonXOffset);
-
-                        StoredRace race = storedPawnRaces[currentThingDef][j];
-
-                        HighlightUtil.DrawHighlights(curHeight, tmpSubBttnRect);
-
-                        Text.Anchor = TextAnchor.MiddleCenter;
-                        Text.Font = GameFont.Medium;
-                        XenotypeDef xenoDef = race.XenotypeDef;
-                        Widgets.Label(tmpSubBttnRect, $"Rimimorpho_TransformToLabel".Translate(GetTFLabel(currentThingDef,xenoDef).Named("LABEL")));
-
-                        if (Mouse.IsOver(tmpSubBttnRect))
-                        {
-                            if (!tfDatas.TryGetValue((currentThingDef, xenoDef), out transformData))
-                            {
-                                transformData = ShiftUtils.GetTransformData(pawn, pawnAmphiShifter, currentThingDef, xenoDef);
-                                tfDatas.Add((currentThingDef, xenoDef), transformData);
-                            }
-
-                            Widgets.DrawHighlight(tmpSubBttnRect);
-                        }
-
-                        if (Widgets.ButtonInvisible(tmpSubBttnRect))
-                        {
-                            if (tfDatas[(currentThingDef, xenoDef)].AbleToTransformFullWork)
-                            {
-                                MakePawnTransformInto(race, xenoDef);
-                            }
-                            else
-                            {
-                                Messages.Message($"Rimimorpho_CantTransformMessage".Translate(pawn.LabelCap.Named("PAWN"),GetTFLabel(currentThingDef,xenoDef).Named("LABEL")), MessageTypeDefOf.RejectInput, false);
-                            }
-                        }
-
-                        curHeight++;
-                    }
-                    ResetTextAndColor();
-                }
+                ResetTextAndColor();
             }
 
             Widgets.EndGroup();
             Widgets.EndScrollView();
             ResetTextAndColor();
+            DrawNeedsBars();
 
+            if (Widgets.CloseButtonFor(closBttn)) Close();
+
+            Rect GetTmpBttnRect(int i, float xOffset = 0f)
+            {
+                return new Rect(xOffset, (bttnHeight + margin) * i + yOffset, BaseSpeciesBttnSize.x - xOffset, BaseSpeciesBttnSize.y);
+            }
+        }
+
+        private void DrawNeedsBars()
+        {
             Rect foodPredictionBar = new Rect(predictionBarArea.position, predictionBarBase);
             Rect sleepPredictionBar = new Rect(foodPredictionBar) { y = foodPredictionBar.yMax + margin };
 
@@ -216,11 +187,54 @@ namespace Rimimorpho
             DrawNeedsBar(sleepPredictionBar, targetRestBorderColor, ref curRestColor, restRequirement, restOverTimeRequirement, pawn.needs.rest);
 
             ResetTextAndColor();
-            if (Widgets.CloseButtonFor(closBttn)) Close();
+        }
 
-            Rect GetTmpBttnRect(int i, float xOffset = 0f)
+        private void HandleSubButton(ThingDef currentThingDef, Rect tmpSubBttnRect, StoredRace race, XenotypeDef xenoDef)
+        {
+            if (Widgets.ButtonInvisible(tmpSubBttnRect))
             {
-                return new Rect(xOffset, (bttnHeight + margin) * i + yOffset, BaseSpeciesBttnSize.x - xOffset, BaseSpeciesBttnSize.y);
+                if (tfDatas[(currentThingDef, xenoDef)].AbleToTransformFullWork)
+                {
+                    MakePawnTransformInto(race, xenoDef);
+                }
+                else
+                {
+                    Messages.Message($"Rimimorpho_CantTransformMessage".Translate(pawn.LabelCap.Named("PAWN"), GetTFLabel(currentThingDef, xenoDef).Named("LABEL")), MessageTypeDefOf.RejectInput, false);
+                }
+            }
+        }
+
+        private void HandleMouseOver(ThingDef currentThingDef, Rect tmpSubBttnRect, XenotypeDef xenoDef)
+        {
+            if (Mouse.IsOver(tmpSubBttnRect))
+            {
+                if (!tfDatas.TryGetValue((currentThingDef, xenoDef), out transformData))
+                {
+                    transformData = ShiftUtils.GetTransformData(pawn, pawnAmphiShifter, currentThingDef, xenoDef);
+                    tfDatas.Add((currentThingDef, xenoDef), transformData);
+                }
+
+                Widgets.DrawHighlight(tmpSubBttnRect);
+            }
+        }
+
+        private void DrawRaceButton(int i, bool thisIsSelectedRace, Rect tmpBttnRect, ThingDef currentThingDef)
+        {
+            if (Widgets.ButtonInvisible(tmpBttnRect))
+            {
+                if (thisIsSelectedRace)
+                {
+                    selectedRace = -1;
+                    transformData = null;
+                    scrollAreaInnerRect = scrollAreaRect.GetInnerScrollRect((bttnHeight + margin) * storedPawnRaces.Count);
+                    SoundDefOf.TabClose.PlayOneShotOnCamera();
+                }
+                else
+                {
+                    selectedRace = i;
+                    scrollAreaInnerRect = scrollAreaRect.GetInnerScrollRect((bttnHeight + margin) * (storedPawnRaces.Count + storedPawnRaces[currentThingDef].Length));
+                    SoundDefOf.TabOpen.PlayOneShotOnCamera();
+                }
             }
         }
 
@@ -228,7 +242,7 @@ namespace Rimimorpho
         {
             inRect.SplitVertically(60f, out Rect left, out Rect right);
 
-            currentBorderColor = MoveTowards(targetBorderColor, currentBorderColor);
+            currentBorderColor = currentBorderColor.MoveTowards(targetBorderColor);
 
             if (!targetVar.ContainsKey($"{need.LabelCap}.cur"))
             {
@@ -251,16 +265,6 @@ namespace Rimimorpho
 
             Text.Anchor = TextAnchor.MiddleLeft;
             Widgets.Label(left, $"{need.LabelCap}:");
-        }
-
-        private Color MoveTowards(Color target, Color current, float speed = 1f)
-        {
-            return new Color
-            (
-                Mathf.MoveTowards(current.r, target.r, speed * Time.deltaTime),
-                Mathf.MoveTowards(current.g, target.g, speed * Time.deltaTime),
-                Mathf.MoveTowards(current.b, target.b, speed * Time.deltaTime)
-            );
         }
 
         private float MoveTowardsFor(float target, float current)

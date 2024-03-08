@@ -89,6 +89,10 @@ namespace Rimimorpho
                     pawn.rotationTracker.FaceCell(pawn.Position + lookingAt);
                 }
 
+                if (Rand.Chance(0.001f / TransformData.SkillStatVal))
+                {
+                    FilthMaker.TryMakeFilth(pawn.Position, pawn.Map, AmphiDefs.RimMorpho_AmphimorphoGoo);
+                }
 
                 RVCLog.Log($"workLeft: {workLeft}, " +
                     $"adjustedSkillVal: {TransformData.SkillStatVal}, " +

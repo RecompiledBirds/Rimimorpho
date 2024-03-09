@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using RimWorld;
+using RVCRestructured.Source.VineLib.Windows;
 using RVCRestructured.Windows;
 using System;
 using System.Collections.Generic;
@@ -116,8 +117,8 @@ namespace Rimimorpho
 
                 Widgets.DrawHighlightIfMouseover(raceButton);
                 Widgets.DrawLineHorizontal(0f, raceButton.yMax, raceButton.width);
-
-                Widgets.DefIcon(raceButton.LeftPartPixels(raceButton.height), currentThingDef);
+                DrawRaceIcon(raceButton, currentThingDef);
+                
                 Text.Font = GameFont.Tiny;
                 Widgets.Label(descLabelRect, currentThingDef.LabelCap);
                 Widgets.DrawTextureFitted(expandImageRect, indexIsSelectedRace ? TexButton.Collapse : TexButton.Reveal, 1f);
@@ -155,6 +156,16 @@ namespace Rimimorpho
             {
                 return new Rect(xOffset, (bttnHeight + margin) * i + yOffset, BaseSpeciesBttnSize.x - xOffset, BaseSpeciesBttnSize.y);
             }
+        }
+
+        private static void DrawRaceIcon(Rect raceButton, ThingDef currentThingDef)
+        {
+            Rect icon = raceButton.LeftPartPixels(raceButton.height).ContractedBy(2f);
+            if (currentThingDef.race?.Humanlike == true)
+            {
+                GUI.DrawTexture(icon, RaceIcons.GetThingDefTexture((currentThingDef, null, icon.size * 4)), ScaleMode.ScaleToFit);
+            }
+            Widgets.DefIcon(icon, currentThingDef);
         }
 
         private void DrawNeedsBars()

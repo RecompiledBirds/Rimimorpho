@@ -43,7 +43,7 @@ namespace Rimimorpho
 
             ThingDef def = request.KindDef.race;
             //saftey check for scenario pawns
-            if (request.Context.HasFlag(PawnGenerationContext.PlayerStarter))
+            if (request.Context.HasFlag(PawnGenerationContext.PlayerStarter) || request.KindDef.defName == "VineInternal")
                 return ThingMaker.MakeThing(def);
             if (!RimimorphoSettings.somePawnsAreAmphimorpho || !Rand.Chance(0.05f)) return PawnBlender.GetHumanoidRace(request);
             Pawn pawn = (Pawn)PawnBlender.GetHumanoidRace(request);

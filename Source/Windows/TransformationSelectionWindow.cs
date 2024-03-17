@@ -233,10 +233,10 @@ namespace Rimimorpho
         {
             if (Widgets.ButtonInvisible(tmpBttnRect))
             {
+                transformData = null;
                 if (thisIsSelectedRace)
                 {
                     selectedRace = -1;
-                    transformData = null;
                     scrollAreaInnerRect = scrollAreaRect.GetInnerScrollRect((bttnHeight + margin) * storedPawnRaces.Count);
                     SoundDefOf.TabClose.PlayOneShotOnCamera();
                 }

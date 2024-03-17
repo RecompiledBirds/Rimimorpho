@@ -82,6 +82,7 @@ namespace Rimimorpho
             pawnAmphiShifter = pawn.TryGetComp<AmphiShifter>();
             storedPawnRaces = pawnAmphiShifter?.knownSpecies;
             storedThingDefs = storedPawnRaces?.Keys.ToList();
+            storedThingDefs.SortByDescending(x => x.race.Humanlike, x => x.defName);
             scrollAreaInnerRect = scrollAreaRect.GetInnerScrollRect((bttnHeight + margin) * storedPawnRaces.Count);
             Log.Message(storedPawnRaces.Join((x) => x.ToString()));
         }
@@ -243,27 +244,24 @@ namespace Rimimorpho
 
             Text.Font = GameFont.Tiny;
             Widgets.Label(descLabelRect, currentThingDef.LabelCap);
-            
+
             if (currentThingDef.race.Humanlike)
             {
-                Widgets.DrawTextureFitted(expandImageRect, thisIsSelectedRace ? TexButton.Collapse : TexButton.Reveal, 1f);
-                if (Widgets.ButtonInvisible(tmpBttnRect))
-                {
-                    transformData = null;
-                    if (thisIsSelectedRace)
-                    {
-                        selectedRace = -1;
-                        scrollAreaInnerRect = scrollAreaRect.GetInnerScrollRect((bttnHeight + margin) * storedPawnRaces.Count);
-                        SoundDefOf.TabClose.PlayOneShotOnCamera();
-                    }
-                    else
-                    {
-                        selectedRace = i;
-                        scrollAreaInnerRect = scrollAreaRect.GetInnerScrollRect((bttnHeight + margin) * (storedPawnRaces.Count + storedPawnRaces[currentThingDef].Length));
-                        SoundDefOf.TabOpen.PlayOneShotOnCamera();
-                    }
-                    return;
-                }
+                HandleHumanLikeButton(i, thisIsSelectedRace, tmpBttnRect, currentThingDef, expandImageRect);
+                return;
+            }
+
+            HandleAnimalButton(i, thisIsSelectedRace, tmpBttnRect, currentThingDef);
+        }
+
+        private void HandleAnimalButton(int i, bool thisIsSelectedRace, Rect tmpBttnRect, ThingDef currentThingDef)
+        {
+            if (thisIsSelectedRace)
+            {
+                Text.Anchor = TextAnchor.MiddleCenter;
+                Text.Font = GameFont.Medium;
+                Widgets.Label(tmpBttnRect, $"Rimimorpho_ClickAgain".Translate());
+                ResetTextAndColor();
             }
 
             if (Widgets.ButtonInvisible(tmpBttnRect))
@@ -280,7 +278,27 @@ namespace Rimimorpho
                     CreateTfData(currentThingDef, null);
                     selectedRace = i;
                 }
-                return;
+            }
+        }
+
+        private void HandleHumanLikeButton(int i, bool thisIsSelectedRace, Rect tmpBttnRect, ThingDef currentThingDef, Rect expandImageRect)
+        {
+            Widgets.DrawTextureFitted(expandImageRect, thisIsSelectedRace ? TexButton.Collapse : TexButton.Reveal, 1f);
+            if (Widgets.ButtonInvisible(tmpBttnRect))
+            {
+                transformData = null;
+                if (thisIsSelectedRace)
+                {
+                    selectedRace = -1;
+                    scrollAreaInnerRect = scrollAreaRect.GetInnerScrollRect((bttnHeight + margin) * storedPawnRaces.Count);
+                    SoundDefOf.TabClose.PlayOneShotOnCamera();
+                }
+                else
+                {
+                    selectedRace = i;
+                    scrollAreaInnerRect = scrollAreaRect.GetInnerScrollRect((bttnHeight + margin) * (storedPawnRaces.Count + storedPawnRaces[currentThingDef].Length));
+                    SoundDefOf.TabOpen.PlayOneShotOnCamera();
+                }
             }
         }
 

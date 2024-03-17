@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
+	<Rimimorpho_ClickAgain>Click again to transform</Rimimorpho_ClickAgain>
 	<Rimimorpho_TransformToLabel>Transform into {LABEL}</Rimimorpho_TransformToLabel>
 	<Rimimorpho_CantTransformMessage>{PAWN} can't transform into {LABEL}! Their rest or food level is too low!</Rimimorpho_CantTransformMessage>
 </LanguageData>

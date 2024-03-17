@@ -15,8 +15,8 @@ namespace Rimimorpho
         public const int ticksASecond = 60;
         public static int StatDifferenceBetweenThings(StatDef stat, ThingDef a, ThingDef b)
         {
-            float statA = a.statBases.GetStatValueFromList(stat,0);
-            float statB = b.statBases.GetStatValueFromList(stat,0);
+            float statA = a.statBases.GetStatOffsetOrBaseFromList(stat);
+            float statB = b.statBases.GetStatOffsetOrBaseFromList(stat);
 
             return (int)Math.Abs(statA - statB);
         }
@@ -26,7 +26,7 @@ namespace Rimimorpho
             int result = 0;
             foreach(StatModifier stat in a.statBases)
             {
-                result+=StatDifferenceBetweenThings(stat.stat,a,b);
+                result += StatDifferenceBetweenThings(stat.stat, a, b);
             }
             return result/a.statBases.Count;
         }
@@ -39,7 +39,7 @@ namespace Rimimorpho
             return (int)Math.Abs(statA - statB);
         }
 
-        public static float StatFromGene(StatDef stat, GeneDef gene) => gene.statOffsets.GetStatOffsetFromList(stat)+gene.statFactors.GetStatFactorFromList(stat);
+        public static float StatFromGene(StatDef stat, GeneDef gene) => gene.statOffsets.GetStatOffsetOrBaseFromList(stat) + gene.statFactors.GetStatOffsetOrBaseFromList(stat);
 
         public static int StatDiff(XenotypeDef a, XenotypeDef b)
         {
@@ -80,7 +80,7 @@ namespace Rimimorpho
                     {
                         foreach (StatModifier stat in gene.statFactors)
                         {
-                            resultA += StatFromGene(stat.stat, gene);
+                            resultB += StatFromGene(stat.stat, gene);
                         }
                     }
                 }
@@ -91,8 +91,7 @@ namespace Rimimorpho
         public static int ShiftDifficulty(Pawn pawn, ShapeshifterComp shapeshifterComp, ThingDef targetDef,XenotypeDef other = null)
         {
             if (other == null) other = XenotypeDefOf.Baseliner;
-            int result = 0;
-            result += StatDiff(shapeshifterComp.CurrentForm, targetDef);
+            int result = StatDiff(shapeshifterComp.CurrentForm, targetDef);
             if(ModLister.BiotechInstalled)
                 result += StatDiff(pawn.genes.Xenotype,other);
             return result/((pawn.skills.GetSkill(AmphiDefs.RimMorpho_Shifting).Level/5)+1);

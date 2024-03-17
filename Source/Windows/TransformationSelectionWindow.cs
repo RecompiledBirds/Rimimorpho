@@ -84,7 +84,6 @@ namespace Rimimorpho
             storedThingDefs = storedPawnRaces?.Keys.ToList();
             storedThingDefs.SortByDescending(x => x.race.Humanlike, x => x.defName);
             scrollAreaInnerRect = scrollAreaRect.GetInnerScrollRect((bttnHeight + margin) * storedPawnRaces.Count);
-            Log.Message(storedPawnRaces.Join((x) => x.ToString()));
         }
 
         public override Vector2 InitialSize => initSize;

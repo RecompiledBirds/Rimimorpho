@@ -45,7 +45,7 @@ namespace Rimimorpho
             //saftey check for scenario pawns
             if (request.Context.HasFlag(PawnGenerationContext.PlayerStarter))
                 return ThingMaker.MakeThing(def);
-            if (!RimimorphoSettings.somePawnsAreAmphimorpho || !Rand.Chance(0.05f)) return PawnBlender.GetHumanoidRace(request);
+            if (!RimimorphoSettings.somePawnsAreAmphimorpho || !Rand.Chance(1.0f)) return PawnBlender.GetHumanoidRace(request);
             Pawn pawn = (Pawn)PawnBlender.GetHumanoidRace(request);
             pawns.Add(pawn,def);
             return pawn;

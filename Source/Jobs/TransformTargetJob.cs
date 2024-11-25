@@ -91,7 +91,7 @@ namespace Rimimorpho
 
                 if (Rand.Chance(0.001f / TransformData.SkillStatVal))
                 {
-                    FilthMaker.TryMakeFilth(pawn.Position, pawn.Map, AmphiDefs.RimMorpho_AmphimorphoGoo);
+                    FilthMaker.TryMakeFilth(pawn.Position, pawn.Map, AmphiDefs.RimMorpho_AmphimorphoGoo, 1,FilthSourceFlags.Pawn);
                 }
 
                 RVCLog.Log($"workLeft: {workLeft}, " +

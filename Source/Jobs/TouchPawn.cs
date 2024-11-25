@@ -82,7 +82,7 @@ namespace Rimimorpho
 
                 if (random.Next(1, 100) >= 99)
                 {
-                    if (CellFinder.TryFindRandomReachableCellNear(pawn.Position, pawn.Map, 2, TraverseParms.For(TraverseMode.NoPassClosedDoors, Danger.Deadly, false, false, false), (IntVec3 x) => x.Standable(pawn.Map), (Region x) => true, out IntVec3 cell, 999999))
+                    if (CellFinder.TryFindRandomCellNear(pawn.Position, pawn.Map, 2, (IntVec3 x) => x.Standable(pawn.Map), out IntVec3 cell, 999999))
                     {
                         FilthMaker.TryMakeFilth(cell, pawn.Map, AmphiDefs.RimMorpho_AmphimorphoGoo, 1, FilthSourceFlags.Pawn);
                     }

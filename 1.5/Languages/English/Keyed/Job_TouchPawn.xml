@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+	<Rimimorpho_CanNotTouchPawn>{NAME} does not have enough food or sleep to become {RACE}.</Rimimorpho_CanNotTouchPawn>
+	<Rimimorpho_CanNeverTouchPawn>{NAME} is not skilled enough to transform into {RACE}.</Rimimorpho_CanNeverTouchPawn>
+	<Rimimorpho_LearningFromPawn>Learning from {0}.</Rimimorpho_LearningFromPawn>
+</LanguageData>
+

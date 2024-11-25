@@ -213,15 +213,18 @@
 				</colorGenerators>
 			</li>
 			<li Class="RVCRestructured.RVRRestrictionComp">
-				<restrictedBodyTypes>
-					<li>RimMorpho_AmphimorphoBodytype</li>
-				</restrictedBodyTypes>
-				
-				<modAllowedApparel>
-					<li>ludeon.rimworld</li>
-					<li>ludeon.rimworld.royalty</li>
-				</modAllowedApparel>
-				<canUseAnyApparel>true</canUseAnyApparel>
+				<restrictions>
+					<alwaysAllowed>
+						<Apparel/>
+					</alwaysAllowed>
+					<defRestrictions>
+						<BodyTypeDef>
+							<RimMorpho_AmphimorphoBodytype>WhiteListSelf</RimMorpho_AmphimorphoBodytype>
+						</BodyTypeDef>
+					</defRestrictions>
+				</restrictions>
+
+
 			</li>
 			<li Class="RVCRestructured.RVRCP">
 
@@ -309,6 +312,7 @@
 			<fleshType>RimMorpho_AmphiFlesh</fleshType>
 			<baseHealthScale>1</baseHealthScale>
 			<foodType>OmnivoreHuman</foodType>
+			<renderTree>Rimimorpho_RenderTree</renderTree>
 			<gestationPeriodDays>18</gestationPeriodDays>
 			<meatMarketValue>0.8</meatMarketValue>
 			<manhunterOnDamageChance>0.50</manhunterOnDamageChance>

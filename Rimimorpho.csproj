@@ -7,23 +7,23 @@
 		<GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<RootNamespace>Rimimorpho</RootNamespace>
-		<OutputPath>1.4/Assemblies</OutputPath>
+		<OutputPath>1.5/Assemblies</OutputPath>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Krafs.Rimworld.Ref" Version="1.4.3901" />
+		<PackageReference Include="Krafs.Rimworld.Ref" Version="1.5.4243" />
 		<PackageReference Include="Lib.Harmony" Version="2.2.2" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="1.4\Assemblies\" />
+		<Folder Include="1.5\Assemblies\" />
 		<Folder Include="Textures\Amphimorpho\Variant_3\" />
 		<Folder Include="Textures\Amphimorpho\Variant_2\" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Reference Include="RimValiCore RW">
-	    <HintPath>..\Vine\1.4\Assemblies\RimValiCore RW.dll</HintPath>
+	  <Reference Include="RVCRestructured">
+	    <HintPath>..\Vine\1.5\Assemblies\RVCRestructured.dll</HintPath>
 	    <Private>False</Private>
 	  </Reference>
 	</ItemGroup>

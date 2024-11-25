@@ -26,7 +26,7 @@ namespace Rimimorpho
             harmony.Patch(AccessTools.Method(typeof(SkillUI), nameof(SkillUI.DrawSkillsOf)), prefix: new HarmonyMethod(typeof(SkillPatch), nameof(SkillPatch.Prefix)));
             harmony.Patch(AccessTools.Method(typeof(AttackTargetsCache), "GetPotentialTargetsFor"), postfix: new HarmonyMethod(typeof(PotentialTargetsPatch),nameof(PotentialTargetsPatch.Postfix)));
             harmony.Patch(AccessTools.Method(typeof(Pawn_MeleeVerbs), "TryMeleeAttack"), postfix: new HarmonyMethod(typeof(MeleeVerbsPatch), nameof(MeleeVerbsPatch.Postfix)));
-            harmony.Patch(AccessTools.Method(typeof(PawnBlenderPatches), nameof(PawnBlenderPatches.ThingDefgenerator)), postfix: new HarmonyMethod(typeof(HiddenNoodlesPatch), nameof(HiddenNoodlesPatch.Postfix)));
+       //     harmony.Patch(AccessTools.Method(typeof(PawnBlenderPatches), nameof(PawnBlenderPatches.ThingDefgenerator)), postfix: new HarmonyMethod(typeof(HiddenNoodlesPatch), nameof(HiddenNoodlesPatch.Postfix)));
             
 
             //Some patches need to run after Vine

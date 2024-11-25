@@ -16,7 +16,7 @@ namespace Rimimorpho
     public static class HiddenNoodlesPatch
     {
        
-        public static bool HasDef(ThingDef def) {  return amphiQueue.Contains(def); }
+        public static bool HasDef(ThingDef def) {  return amphiQueue.Count>0 && amphiQueue.Contains(def); }
         public static ThingDef PawnDef() {
             ThingDef def = amphiQueue[0];
             amphiQueue.RemoveAt(0);

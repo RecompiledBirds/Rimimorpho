@@ -108,14 +108,17 @@ namespace Rimimorpho
             transform.AddFinishAction(() =>
             {
                 transformData.Active = false;
+                Log.Message("test");
+                Log.Message($"{workLeft}");
                 if (workLeft > 0f) return;
 
                 if (TransformData.TargetXenoDef == null)
                 {
+                    Log.Message("test2");
                     pawn.TryGetComp<AmphiShifter>().SetForm(TransformData.TargetRace);
                     return;
                 }
-
+                Log.Message("test3");
                 pawn.TryGetComp<AmphiShifter>().SetForm(TransformData.TargetRace, TransformData.TargetXenoDef,bodyTypeDef);
                 
             });

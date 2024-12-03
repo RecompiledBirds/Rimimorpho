@@ -20,8 +20,6 @@
 				<caresAboutUndefinedRaces>true</caresAboutUndefinedRaces>
 			</li>
 			<li Class="RVCRestructured.RVRGraphicsComp">
-				<bodyTex>RVC/Empty</bodyTex>
-				<headTex>RVC/Empty</headTex>
 				<renderableDefs>
 					<li>RimMorpho_Body</li>
 					<li>RimMorpho_Head</li>

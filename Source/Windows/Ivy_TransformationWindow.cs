@@ -51,7 +51,7 @@ namespace Rimimorpho.Windows
         public override Vector2 InitialSize => new Vector2(860, 540);
 
 
-        public override void DoWindowContents(Rect inRect)
+        public override void DoWindowContents(Rect _)
         {
             // Widgets.DrawBox(tabRect);
             if (RimimorphoSettings.useRimworldTabs)
@@ -63,7 +63,7 @@ namespace Rimimorpho.Windows
             {
                 for (int i = 0; i < tabs.Count; i++)
                 {
-
+                    
                     TFWindowTab tab = tabs[i];
                     Vector2 rectSize = new Vector2(200, 60);
                     Vector2 rectPosition = new Vector2((rectSize.x * i) + 20, 11);

@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	
+	<RVCRestructured.Defs.RenderableDef ParentName="RimMorpho_BaseAmphiFacialFeature">
+		<defName>RimMorpho_Eyes</defName>
+		<textures>
+			<li>
+				<texPath>Amphimorpho/BaseTexture/Eyes/Eyes</texPath>
+			</li>
+		</textures>
+	</RVCRestructured.Defs.RenderableDef>
+
+	<RVCRestructured.Defs.RenderableDef ParentName="RimMorpho_BaseAmphiFacialFeature">
+		<defName>RimMorpho_Mouth</defName>
+		<west>
+			<position>(-0.1,0.005,0)</position>
+			<size>1.5</size>
+		</west>
+		<textures>
+			<li>
+				<texPath>Amphimorpho/BaseTexture/Mouth/Mouth</texPath>
+			</li>
+		</textures>
+	</RVCRestructured.Defs.RenderableDef>
+</Defs>

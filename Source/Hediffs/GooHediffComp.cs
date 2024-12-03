@@ -1,4 +1,5 @@
 ﻿using Rimimorpho;
+using RimWorld;
 using RVCRestructured;
 using RVCRestructured.Shifter;
 using System;
@@ -26,19 +27,25 @@ namespace Rimimorpho
             float severity = parent.Severity;
             if (severity < 100)
             {
-                severityAdjustment += (float)Math.Pow(parent.Severity,2);
 
                 if (Pawn.def != AmphiDefs.RimMorpho_Amphimorpho) return;
 
-                if(Rand.Chance(severity/100))
+                if(Rand.Chance(severity/200))
                 {
-                    Job job = JobMaker.MakeJob(AmphiDefs.RimMorpho_TransformRandom, parent.pawn);
+                    Job job = JobMaker.MakeJob(AmphiDefs.RimMorpho_TransformTarget, parent.pawn);
                     parent.pawn.jobs.TryTakeOrderedJob(job);
                 }
                 return;
             }
+            
             if (Pawn.def != AmphiDefs.RimMorpho_Amphimorpho)
+            {
+                ThingDef oldDef = Pawn.def;
+                XenotypeDef oldXenoType = Pawn.genes.Xenotype;
                 PawnChanger.ChangePawnRace(Pawn, AmphiDefs.RimMorpho_Amphimorpho);
+                AmphiShifter shifter = Pawn.GetComp<AmphiShifter>();
+                shifter.LearnSpecies(oldDef,oldXenoType);
+            }
             Pawn.health.RemoveHediff(parent);
 
         }

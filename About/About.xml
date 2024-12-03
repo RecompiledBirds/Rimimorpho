@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
-	<name>Rimimorpho</name>
+	<name>Rimimorpho - 0.0.3A</name>
 	<author>RecompiledBirds, Daniminerio, TuxedoDragon</author>
 	<modDependencies>
 		<li>
@@ -24,7 +24,7 @@
 		<li>brrainz.harmony</li>
 	</loadAfter>
 	<supportedVersions>
-		<li>1.4</li>
+		<li>1.5</li>
 	</supportedVersions>
 	<packageId>RecompiledBirds.Rimimorpho</packageId>
 	<description>Rimimorpho desc</description>

@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<SkillDef>
+		<defName>RimMorpho_Shifting</defName>
+		<description>PLACEHOLDER</description>
+		<skillLabel>shapeshifting</skillLabel>
+		<listOrder>20</listOrder>
+		<lessonInteraction MayRequire="Ludeon.RimWorld.Biotech">LessonSocial</lessonInteraction>
+	</SkillDef>
+</Defs>

@@ -73,6 +73,7 @@ namespace Rimimorpho
         //TODO: Make strings translateable
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
+            
             Pawn pawn = parent as Pawn;
             Command_Target command = new Command_Target
             {
@@ -128,17 +129,6 @@ namespace Rimimorpho
             }
         }
 
-        public override void SetForm(Pawn pawn)
-        {
-            base.SetForm(pawn);
-
-            
-        }
-
-        public override void SetForm(ThingDef def)
-        {
-            base.SetForm(def);
-        }
 
         private int ticksDownedFor = 0;
         public override void CompTick()
